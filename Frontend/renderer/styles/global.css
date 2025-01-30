@@ -1,0 +1,250 @@
+/* BootStrap Icons */
+@import url("https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css");
+
+/* Fonts */
+@import url("https://fonts.googleapis.com/css2?family=Afacad+Flux:wght@100..1000&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Manrope:wght@200..800&display=swap");
+
+/* Reset and Normalize */
+* {
+	margin: 0;
+	box-sizing: border-box;
+}
+
+body {
+	padding: 0px;
+	line-height: 1.6;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+	margin-bottom: 16px;
+}
+
+button {
+	background-color: #0070f3;
+	color: white;
+	padding: 10px 15px;
+	border: none;
+	border-radius: 8px;
+	cursor: pointer;
+}
+
+button:hover {
+	background-color: #005bb5;
+}
+
+.mainContainer {
+  background: #F2F2F2;
+  content: "";
+  flex: 8;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Navigation css */
+
+.navigationContainer {
+	display: flex;
+	justify-content: space-between;
+	background-color: #fff;
+	padding: 10px 20px;
+	margin: 5px 0px;
+	border-radius: 70px;
+	width: 100%;
+	height: 72px;
+	font-family: "Manrope", serif;
+	font-style: normal;
+	font-weight: bold;
+	font-size: 14px;
+	line-height: 19px;
+	letter-spacing: 0px;
+	text-align: left;
+	letter-spacing: 0px;
+	color: #072635;
+	opacity: 1;
+	box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.164);
+}
+
+.navigationContainer .logo img {
+	width: 58px;
+	height: 48px;
+}
+
+.navigationContainer .options {
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+	justify-content: center;
+}
+
+.navigationContainer .options ul {
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+	justify-content: center;
+	margin: 0;
+}
+
+.options ul li {
+	list-style: none;
+	margin: 0px 30px;
+}
+
+.options ul li a {
+	text-decoration: none;
+	color: #072635;
+  font-size: 18px;
+}
+
+.profile {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	gap: 10px;
+}
+
+.profile i{
+  font-size: 20px;
+  margin: 0px 0px 3px 0px;
+}
+
+.profile .details p {
+	margin: 0px 0px 3px 0px;
+	font-size: 18px;
+}
+
+.profile hr {
+	width: 1px;
+	height: 44px;
+	background-color: rgba(128, 128, 128, 0.885);
+	border: none;
+}
+
+.profileSettings i {
+	font-size: 20px;
+}
+
+/* Video Container */
+/*Video styles*/
+.videoContainer {
+  display: grid;
+  grid-template-columns: repeat(
+    auto-fill,
+    minmax(510px, 1fr)
+  ); /* Responsive columns */
+  gap: 40px;
+  padding: 10px;
+  margin-left: 50px;
+  margin-right: 20px;
+  position: relative;
+}
+
+/* Container for the image and overlay */
+.videoCard {
+  position: relative;
+  border-radius: 4px;
+  overflow: visible; /* Ensures content stays within the rounded corners */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  width: 670px; /*600px, if ever needs changing*/
+  height: 380px; /*350px, if ever needs changing*/
+  z-index: 1;
+}
+
+.videoCard:hover {
+  box-shadow: 0 5px 10px 0 rgba(58, 58, 58, 0.5);
+}
+
+.image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover; /* Ensures the image covers the entire card without distorting */
+  cursor: pointer;
+}
+
+.videoCard img {
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  top: 217px;
+  left: 438px;
+  border-radius: 4px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.overlay {
+  position: absolute;
+  bottom: 0;
+  color: white;
+  width: 100%;
+  padding: 5px 30px 20px 30px;
+  box-sizing: border-box;
+}
+
+/* Title styling */
+.overlay h2 {
+  margin: 0px;
+  font-size: 19px;
+  font-weight: 500;
+}
+
+.comment {
+  color: rgb(15, 60, 76);
+  position: absolute;
+  top: 100%;
+  left: 0px;
+  font-size: 20px;
+  cursor: pointer;
+  z-index: 10;
+  opacity: 1;
+  margin-top: 10px;
+  margin-bottom: 5px;
+}
+
+/* Pagnation styles */
+.pagination {
+  display: flex;
+  justify-content: center;
+  margin-top: auto; /* Pushes pagination to the bottom */
+  padding: 40px 0 20px 0;
+}
+
+.noImage {
+  position: absolute;
+  top: 30vh;
+  left: 40vh;
+  font-family: "Poppins", sans-serif;
+  font-size: 30px;
+  color: rgb(185, 185, 185);
+}
+
+/* Media queries for responsiveness */
+@media (min-width: 768px) {
+  .container {
+    flex-direction: row;
+  }
+
+  .menu {
+    width: 390px;
+    flex: none;
+  }
+
+  .mainPage {
+    flex: 1;
+  }
+}
+
+@media (max-width: 768px) {
+  .searchBar {
+    width: 200px;
+  }
+
+  .imageContainer {
+    grid-template-columns: 1fr;
+  }
+}
