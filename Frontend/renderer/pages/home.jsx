@@ -117,7 +117,7 @@ export default function HomePage() {
 										</div>
 										<div className="videoDetails">
 											<span className="creatorName">Name</span>
-											<span className="videoDate">{video.createAt}</span>
+											<span className="videoDate">{video.createdAt}</span>
 										</div>
 									</div>
 								</div>

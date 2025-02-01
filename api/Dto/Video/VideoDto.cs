@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using api.Dto.Review;
 
 namespace api.Dto.Video
 {
@@ -13,8 +14,8 @@ namespace api.Dto.Video
     public string Category { get; set; } = string.Empty;
     public string ThumbnailURL { get; set; } = string.Empty;
     public string VideoURL { get; set; } = string.Empty;
-    public int Duration { get; set; }
     public bool IsPublic { get; set; } = false;
-    public DateOnly CreateAt { get; set; }
+    public DateOnly CreatedAt { get; set; }
+    public List<ReviewDto> Reviews { get; set; }
   }
 }

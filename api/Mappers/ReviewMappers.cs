@@ -19,5 +19,24 @@ namespace api.Mappers
         CreatedAt = reviewModel.CreatedAt
       };
     }
+
+    public static Review ToReviewFromCreate(this CreateReviewDto reviewDto, int videoId)
+    {
+      return new Review
+      {
+        Rating = reviewDto.Rating,
+        ReviewText = reviewDto.ReviewText,
+        VideoId = videoId
+      };
+    }
+
+    public static Review ToReviewFromUpdate(this UpdateReviewRequestDto reviewDto)
+    {
+      return new Review
+      {
+        Rating = reviewDto.Rating,
+        ReviewText = reviewDto.ReviewText,
+      };
+    }
   }
 }

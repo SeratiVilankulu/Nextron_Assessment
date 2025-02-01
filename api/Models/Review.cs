@@ -13,7 +13,7 @@ namespace api.Models
     public DateOnly? CreatedAt { get; set; }
 
     // Foreign Key Properties
-    public int? VideoID { get; set; }
+    public int? VideoId { get; set; }
     public Video? Video { get; set; }
 
     // public string? AppUserId { get; set; }

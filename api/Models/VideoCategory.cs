@@ -7,10 +7,10 @@ namespace api.Models
 {
     public class VideoCategory
     {
-      public int VideoCategoryID { get; set; }
-      public int VideoID { get; set; }
+      public int VideoCategoryId { get; set; }
+      public int VideoId { get; set; }
       public Video? Video { get; set; } = null!;
-      public int CategoryID { get; set; }
+      public int CategoryId { get; set; }
       public Category? Category { get; set; } = null!;
     }
 }

@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using api.Data;
@@ -11,9 +12,11 @@ using api.Data;
 namespace api.Migrations
 {
     [DbContext(typeof(ApplicationDBContext))]
-    partial class ApplicationDBContextModelSnapshot : ModelSnapshot
+    [Migration("20250201114702_RenameColumn")]
+    partial class RenameColumn
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -137,12 +140,12 @@ namespace api.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<int?>("VideoId")
+                    b.Property<int?>("VideoID")
                         .HasColumnType("integer");
 
                     b.HasKey("ReviewId");
 
-                    b.HasIndex("VideoId");
+                    b.HasIndex("VideoID");
 
                     b.ToTable("Reviews");
                 });
@@ -191,23 +194,23 @@ namespace api.Migrations
 
             modelBuilder.Entity("api.Models.VideoCategory", b =>
                 {
-                    b.Property<int>("VideoCategoryId")
+                    b.Property<int>("VideoCategoryID")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("integer");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("VideoCategoryId"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("VideoCategoryID"));
 
-                    b.Property<int>("CategoryId")
+                    b.Property<int>("CategoryID")
                         .HasColumnType("integer");
 
-                    b.Property<int>("VideoId")
+                    b.Property<int>("VideoID")
                         .HasColumnType("integer");
 
-                    b.HasKey("VideoCategoryId");
+                    b.HasKey("VideoCategoryID");
 
-                    b.HasIndex("CategoryId");
+                    b.HasIndex("CategoryID");
 
-                    b.HasIndex("VideoId");
+                    b.HasIndex("VideoID");
 
                     b.ToTable("VideoCategories");
                 });
@@ -225,7 +228,7 @@ namespace api.Migrations
                 {
                     b.HasOne("api.Models.Video", "Video")
                         .WithMany("Reviews")
-                        .HasForeignKey("VideoId");
+                        .HasForeignKey("VideoID");
 
                     b.Navigation("Video");
                 });
@@ -234,13 +237,13 @@ namespace api.Migrations
                 {
                     b.HasOne("api.Models.Category", "Category")
                         .WithMany("VideoCategories")
-                        .HasForeignKey("CategoryId")
+                        .HasForeignKey("CategoryID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("api.Models.Video", "Video")
                         .WithMany("VideoCategories")
-                        .HasForeignKey("VideoId")
+                        .HasForeignKey("VideoID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 

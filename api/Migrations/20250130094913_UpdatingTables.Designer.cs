@@ -162,7 +162,7 @@ namespace api.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<DateOnly>("CreateAt")
+                    b.Property<DateOnly>("CreatedAt")
                         .HasColumnType("date");
 
                     b.Property<string>("Description")

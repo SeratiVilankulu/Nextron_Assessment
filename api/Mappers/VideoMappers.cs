@@ -19,9 +19,9 @@ namespace api.Mappers
         Category = videoModel.Category,
         ThumbnailURL = videoModel.ThumbnailURL,
         VideoURL = videoModel.VideoURL,
-        Duration = videoModel.Duration,
         IsPublic = videoModel.IsPublic,
-        CreateAt = videoModel.CreateAt
+        CreatedAt = videoModel.CreatedAt,
+        Reviews = videoModel.Reviews.Select(r => r.ToReviewDto()).ToList()
       };
     }
 
@@ -34,7 +34,6 @@ namespace api.Mappers
         Category = videoDto.Category,
         ThumbnailURL = videoDto.ThumbnailURL,
         VideoURL = videoDto.VideoURL,
-        Duration = videoDto.Duration,
         IsPublic = videoDto.IsPublic,
       };
     }

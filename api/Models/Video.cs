@@ -13,9 +13,9 @@ namespace api.Models
     public string Category { get; set; } = string.Empty;
     public string ThumbnailURL { get; set; } = string.Empty;
     public string VideoURL { get; set; } = string.Empty;
-    public int Duration { get; set; }
+    public TimeSpan videoDuration { get; set; }
     public bool IsPublic { get; set; } = false;
-    public DateOnly CreateAt { get; set; }
+    public DateOnly CreatedAt { get; set; }
 
     // // Foreign Key Properties
     // public string? AppUserId { get; set; }
