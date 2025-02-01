@@ -14,6 +14,17 @@ builder.Services.AddDbContext<ApplicationDBContext>(options =>
   options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection"));
 });
 
+// Add CORS configuration
+builder.Services.AddCors(options =>
+{
+  options.AddPolicy("AllowSpecificOrigin", policy =>
+  {
+    policy.WithOrigins("http://localhost:8888")
+    .AllowAnyHeader()
+    .AllowAnyMethod();
+  });
+});
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -24,6 +35,8 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+app.UseCors("AllowSpecificOrigin");
 
 app.MapControllers();
 

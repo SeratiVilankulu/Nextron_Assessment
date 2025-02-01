@@ -1,4 +1,5 @@
 import React from "react";
+import Link from "next/link";
 
 const Navigation = () => {
 	return (
@@ -10,13 +11,13 @@ const Navigation = () => {
 			<div className="options">
 				<ul>
 					<li>
-						<a href="/home">Home</a>
+						<Link href="/home">Home</Link>
 					</li>
 					<li>
-						<a href="#Upload">Upload</a>
+						<Link href="/upload">Upload</Link>
 					</li>
 					<li>
-						<a href="#View">View</a>
+						<Link href="/posts">My Posts</Link>
 					</li>
 				</ul>
 			</div>

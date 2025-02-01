@@ -1,17 +1,43 @@
-import React, { useState, useEffect, useNavigate } from "react";
-import Head from 'next/head'
-import Link from 'next/link'
-import Image from 'next/image'
-import Navigation from '../components/navigation'
-
+import React, { useState, useEffect, useRef } from "react";
+import Head from "next/head";
+import Link from "next/link";
+import Image from "next/image";
+import { useRouter } from "next/router";
+import axios from "axios";
+import Navigation from "../components/navigation";
 
 export default function HomePage() {
-  const [message, setMessage] = React.useState('No message found')
-  const [video, setVideos] = useState([]); // State to store fetched videos
+	const [message, setMessage] = React.useState("No message found");
+	const [video, setVideos] = useState([]); // State to store fetched videos
 	const [currentPage, setCurrentPage] = useState(1); // Number of images to display per page
 	const videosPerPage = 6;
 	const [loading, setLoading] = useState(false); // Track loading state
-	// const navigate = useNavigate();
+	const router = useRouter();
+	const videoContainerRef = useRef(null);
+
+	// Fetch the uploaded thumbnails from the backend
+	useEffect(() => {
+		const fetchVideoThumbnails = async () => {
+			try {
+				const response = await axios.get("http://localhost:5110/api/video");
+				setVideos(response.data);
+			} catch (error) {
+				console.error("An error occurred while fetching videos", error);
+			}
+		};
+
+		fetchVideoThumbnails();
+	}, []);
+
+	//Function to handel thumbnail click and navigate to video detail
+	const thumbnailClick = (video) => {
+		if (video.videoId) {
+			router.push({
+				pathname: `/video/${video.videoId}`,
+				query: { title: video.title, description: video.description },
+			});
+		}
+	};
 
 	// Calculate the indexes for the images to display on the current page
 	const indexOfLastVideo = currentPage * videosPerPage;
@@ -30,60 +56,75 @@ export default function HomePage() {
 		}, 500); // Simulate network delay
 	};
 
-	// Scroll event listener to trigger fetchMoreVideos when user reaches bottom
-	const handleScroll = (event) => {
-		const bottom =
-			event.target.scrollHeight ===
-			event.target.scrollTop + event.target.clientHeight;
-		if (bottom) {
+	// Scroll event listener to trigger fetchMoreVideos when user reaches the bottom
+	const handleScroll = () => {
+		const container = videoContainerRef.current;
+		if (
+			container &&
+			container.scrollHeight - container.scrollTop === container.clientHeight
+		) {
 			fetchMoreVideos();
 		}
 	};
 
 	useEffect(() => {
-		// Attach scroll event listener
-		const videoContainer = document.querySelector(".videoContainer");
-		if (videoContainer) {
-			videoContainer.addEventListener("scroll", handleScroll);
+		const container = videoContainerRef.current;
+		if (container) {
+			container.addEventListener("scroll", handleScroll);
 		}
 
-		// Clean up event listener when component is unmounted
 		return () => {
-			if (videoContainer) {
-				videoContainer.removeEventListener("scroll", handleScroll);
+			if (container) {
+				container.removeEventListener("scroll", handleScroll);
 			}
 		};
 	}, [loading]);
 
-  React.useEffect(() => {
-    window.ipc.on('message', (message) => {
-      setMessage(message)
-    })
-  }, [])
-
-  return (
+	return (
 		<React.Fragment>
+			<Head>
+				<title>Streamify Home</title>
+			</Head>
 			<div className="mainContainer p-2">
 				<Navigation />
 
-				<div className="videoContainer">
+				<div
+					className={`videoContainer ${
+						currentVideos.length === 0 ? "noVideos" : ""
+					}`}
+					ref={videoContainerRef}
+				>
 					{currentVideos.length > 0 ? (
-						currentVideos.map((image) => (
-							<div className="videoCard" key={image.id}>
-								<img
-									src={image.imageURL}
-									className="image"
-									onClick={() => imageClick(image)}
-									alt={image.title}
-								/>
-								<div className="overlay">
-									<h2>{image.title}</h2>
+						currentVideos.map((video) => (
+							<div className="videoGrid" key={video.id}>
+								<div className="videoCard">
+									<Image
+										src={video.thumbnailURL}
+										className="videoThumbnail"
+										onClick={() => thumbnailClick(video)}
+										alt={video.title}
+										width={300}
+										height={200}
+									/>
+									<div className="videoContent">
+										<div className="videoTitle">
+											<p>{video.title}</p>
+											<i className="bi bi-chat-left comment"></i>
+										</div>
+										<div className="rating">
+											<span className="ratingCount">3</span>
+											{video.rating} <i className="bi bi-star-fill"></i>
+										</div>
+										<div className="videoDetails">
+											<span className="creatorName">Name</span>
+											<span className="videoDate">{video.createAt}</span>
+										</div>
+									</div>
 								</div>
-								<i className="bi bi-chat-left comment"></i>
 							</div>
 						))
 					) : (
-						<p className="noImage">No images found for the selected tag.</p>
+						<div className="noVideo">No videos have been uploaded yet.</div>
 					)}
 					{loading && <p>Loading more...</p>}
 				</div>
