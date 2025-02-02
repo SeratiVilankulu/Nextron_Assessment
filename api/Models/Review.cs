@@ -17,5 +17,6 @@ namespace api.Models
 
     public string? AppUserId { get; set; }
 
+    public List<Reply> Replies { get; set; } = new List<Reply>();
   }
 }

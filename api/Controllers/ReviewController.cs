@@ -67,6 +67,7 @@ namespace api.Controllers
 
       var reviewModel = reviewDto.ToReviewFromCreate(videoId);
       reviewModel.CreatedAt = DateOnly.FromDateTime(DateTime.Now);
+      
       await _reviewRepo.CreateAsync(reviewModel);
 
       return CreatedAtAction(nameof(GetById), new { reviewId = reviewModel.ReviewId }, reviewModel.ToReviewDto());
@@ -105,6 +106,5 @@ namespace api.Controllers
 
       return Ok(reviewModel);
     }
-
   }
 }

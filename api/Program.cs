@@ -37,12 +37,12 @@ builder.Services.AddIdentity<AppUser, IdentityRole>(options =>
 
 builder.Services.AddAuthentication(options =>
 {
-options.DefaultAuthenticateScheme =
-options.DefaultChallengeScheme =
-options.DefaultForbidScheme =
-options.DefaultScheme =
-options.DefaultSignInScheme =
-options.DefaultSignOutScheme = JwtBearerDefaults.AuthenticationScheme;
+  options.DefaultAuthenticateScheme =
+  options.DefaultChallengeScheme =
+  options.DefaultForbidScheme =
+  options.DefaultScheme =
+  options.DefaultSignInScheme =
+  options.DefaultSignOutScheme = JwtBearerDefaults.AuthenticationScheme;
 
 }).AddJwtBearer(options =>
 {
@@ -63,6 +63,7 @@ options.DefaultSignOutScheme = JwtBearerDefaults.AuthenticationScheme;
 builder.Services.AddScoped<IVideoRepository, VideoRepo>();
 builder.Services.AddScoped<IReviewRepository, ReviewRepo>();
 builder.Services.AddScoped<ICategoryRepository, CategoryRepo>();
+builder.Services.AddScoped<IReplyRepository, ReplyRepo>();
 
 // Add CORS configuration
 builder.Services.AddCors(options =>

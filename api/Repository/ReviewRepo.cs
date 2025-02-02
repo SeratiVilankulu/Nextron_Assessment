@@ -43,12 +43,17 @@ namespace api.Repository
 
     public async Task<List<Review>> GetAllAsync()
     {
-      return await _context.Reviews.ToListAsync();
+      return await _context.Reviews.Include(r => r.Replies).ToListAsync();
     }
 
     public async Task<Review?> GetByIdAsync(int id)
     {
-      return await _context.Reviews.FindAsync(id);
+      return await _context.Reviews.Include(r => r.Replies).FirstOrDefaultAsync(i => i.ReviewId == id);
+    }
+
+    public Task<bool> ReviewExists(int id)
+    {
+      return _context.Reviews.AnyAsync(v => v.ReviewId == id);
     }
 
     public async Task<Review?> UpdateAsync(int id, Review reviewModel)
