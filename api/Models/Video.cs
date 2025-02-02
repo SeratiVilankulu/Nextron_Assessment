@@ -10,7 +10,6 @@ namespace api.Models
     public int VideoId { get; set; }
     public string Title { get; set; } = string.Empty;
     public string Description { get; set; } = string.Empty;
-    public string Category { get; set; } = string.Empty;
     public string ThumbnailURL { get; set; } = string.Empty;
     public string VideoURL { get; set; } = string.Empty;
     public TimeSpan videoDuration { get; set; }
@@ -18,9 +17,7 @@ namespace api.Models
     public DateOnly CreatedAt { get; set; }
 
     // // Foreign Key Properties
-    // public string? AppUserId { get; set; }
-    // public AppUser? AppUsers { get; set; }
-
+    public string? AppUserId { get; set; }
 
     public List<Review> Reviews { get; set; } = new List<Review>();
     public List<VideoCategory> VideoCategories { get; set; } = new List<VideoCategory>();

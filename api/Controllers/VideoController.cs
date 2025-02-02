@@ -90,7 +90,7 @@ namespace api.Controllers
         System.IO.File.Delete(tempFilePath);
 
         // Return the response
-        return CreatedAtAction(nameof(GetById), new { id = videoModel.VideoId }, videoModel.ToVideoDto());
+        return CreatedAtAction(nameof(GetById), new { videoId = videoModel.VideoId }, videoModel.ToVideoDto());
       }
       catch (Exception ex)
       {

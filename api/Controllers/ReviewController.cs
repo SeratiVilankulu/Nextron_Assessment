@@ -50,6 +50,7 @@ namespace api.Controllers
       {
         return NotFound();
       }
+
       return Ok(review.ToReviewDto());
     }
 
@@ -68,7 +69,7 @@ namespace api.Controllers
       reviewModel.CreatedAt = DateOnly.FromDateTime(DateTime.Now);
       await _reviewRepo.CreateAsync(reviewModel);
 
-      return CreatedAtAction(nameof(GetById), new { id = reviewModel.ReviewId }, reviewModel.ToReviewDto());
+      return CreatedAtAction(nameof(GetById), new { reviewId = reviewModel.ReviewId }, reviewModel.ToReviewDto());
     }
 
     [HttpPatch]
@@ -94,7 +95,7 @@ namespace api.Controllers
     {
       if (!ModelState.IsValid)
         return BadRequest(ModelState);
-        
+
       var reviewModel = await _reviewRepo.DeleteAsync(reviewId);
 
       if (reviewModel == null)

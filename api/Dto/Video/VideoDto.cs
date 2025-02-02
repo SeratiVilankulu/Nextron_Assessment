@@ -11,7 +11,6 @@ namespace api.Dto.Video
     public int VideoId { get; set; }
     public string Title { get; set; } = string.Empty;
     public string Description { get; set; } = string.Empty;
-    public string Category { get; set; } = string.Empty;
     public string ThumbnailURL { get; set; } = string.Empty;
     public string VideoURL { get; set; } = string.Empty;
     public bool IsPublic { get; set; } = false;

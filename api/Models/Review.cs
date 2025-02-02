@@ -14,10 +14,8 @@ namespace api.Models
 
     // Foreign Key Properties
     public int? VideoId { get; set; }
-    public Video? Video { get; set; }
 
-    // public string? AppUserId { get; set; }
-    // public AppUser? AppUsers { get; set; }
+    public string? AppUserId { get; set; }
 
   }
 }

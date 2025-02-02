@@ -15,9 +15,6 @@ namespace api.Dto.Video
     [MaxLength(255, ErrorMessage = "Text cannot exceeded the character length")]
     public string Description { get; set; } = string.Empty;
     [Required]
-    [MaxLength(50, ErrorMessage = "Text cannot exceeded the character length")]
-    public string Category { get; set; } = string.Empty;
-    [Required]
     public string ThumbnailURL { get; set; } = string.Empty;
     [Required]
     public string VideoURL { get; set; } = string.Empty;

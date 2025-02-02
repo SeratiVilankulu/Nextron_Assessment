@@ -16,7 +16,6 @@ namespace api.Mappers
         VideoId = videoModel.VideoId,
         Title = videoModel.Title,
         Description = videoModel.Description,
-        Category = videoModel.Category,
         ThumbnailURL = videoModel.ThumbnailURL,
         VideoURL = videoModel.VideoURL,
         IsPublic = videoModel.IsPublic,
@@ -31,7 +30,6 @@ namespace api.Mappers
       {
         Title = videoDto.Title,
         Description = videoDto.Description,
-        Category = videoDto.Category,
         ThumbnailURL = videoDto.ThumbnailURL,
         VideoURL = videoDto.VideoURL,
         IsPublic = videoDto.IsPublic,
