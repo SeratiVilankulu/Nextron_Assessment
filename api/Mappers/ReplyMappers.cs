@@ -24,7 +24,7 @@ namespace api.Mappers
       return new Reply
       {
         ReplyText = replyDto.ReplyText,
-        ReplyId = reviewId
+        ReviewId = reviewId
       };
     }
 
@@ -35,6 +35,6 @@ namespace api.Mappers
         ReplyText = ReplyDto.ReplyText,
       };
     }
-    
+
   }
 }

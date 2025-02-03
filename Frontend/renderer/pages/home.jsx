@@ -32,10 +32,7 @@ export default function HomePage() {
 	//Function to handel thumbnail click and navigate to video detail
 	const thumbnailClick = (video) => {
 		if (video.videoId) {
-			router.push({
-				pathname: `/video/${video.videoId}`,
-				query: { title: video.title, description: video.description },
-			});
+			router.push(`/video/${video.videoId}`);
 		}
 	};
 
