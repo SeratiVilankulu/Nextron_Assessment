@@ -58,6 +58,17 @@ namespace api.Controllers
       return Ok(video.ToVideoDto());
     }
 
+    [HttpGet("user/{userId}")]
+    public async Task<IActionResult> GetByUserId(string userId)
+    {
+      var videos = await _videoRepo.GetByUserIdAsync(userId);
+      if (videos == null || !videos.Any())
+      {
+        return NotFound($"No videos found for the user {userId}.");
+      }
+      return Ok(videos);
+    }
+
     [HttpPost("{categoryId:int}")]
     public async Task<IActionResult> Create([FromBody] CreateVideoRequestDto videoDto, [FromRoute] int categoryId)
     {

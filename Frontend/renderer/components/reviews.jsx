@@ -1,51 +1,73 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
+import { formatDistanceToNow } from "date-fns";
 
 const Reviews = ({ videoId }) => {
-	const [reviews, setReviews] = useState([]);
-	const [newReview, setNewReview] = useState("");
-  const [rating, setRating] = useState(0);
-	const [reply, setReply] = useState([]);
-  const [newReply, setNewReply] = useState("");
+	const [reviews, setReviews] = useState([]); // State for storing reviews
+	const [newReview, setNewReview] = useState(""); // State for new review input
+	const [rating, setRating] = useState(0); // State for rating input
+	const [openReplies, setOpenReplies] = useState({}); // State to manage which reviews have replies visible
+	const [replies, setReplies] = useState({}); // State to store replies for each review
 
+	// Fetch reviews whenever the videoId changes
 	useEffect(() => {
 		if (videoId) {
 			fetchReviews();
-      fetchReplies();
 		}
 	}, [videoId]);
 
-	// Function to fetch reviews from the backend
+	// Fetch reviews from the backend for the current video
 	const fetchReviews = async () => {
 		try {
-			const response = await axios.get(`http://localhost:5110/api/review/video/${videoId}`);
+			const response = await axios.get(
+				`http://localhost:5110/api/review/video/${videoId}`
+			);
 			setReviews(response.data);
 		} catch (error) {
-			console.error("Error fetching review:", error);
+			console.error("Error fetching reviews:", error);
 		}
 	};
 
-	// Function to fetch replies to reviews from the backend
-	const fetchReplies = async () => {
+	// Fetch replies for a specific review from the backend
+	const fetchReplies = async (reviewId) => {
 		try {
-			const response = await axios.get(`http://localhost:5110/api/reply/`);
-			setNewReply(response.data);
+			const response = await axios.get(
+				`http://localhost:5110/api/reply/review/${reviewId}`
+			);
+			// Store replies for the specific review in state
+			setReplies((prevReplies) => ({
+				...prevReplies,
+				[reviewId]: response.data,
+			}));
 		} catch (error) {
-			console.error("Error fetching reply:", error);
+			console.error("Error fetching replies:", error);
 		}
 	};
 
-	// Function for posting a new reviews
+	// Toggle replies visibility and fetch them if not already fetched
+	const handleToggleReplies = (reviewId) => {
+		setOpenReplies((prevOpenReplies) => ({
+			...prevOpenReplies,
+			[reviewId]: !prevOpenReplies[reviewId],
+		}));
+
+		// Fetch replies only if not already fetched
+		if (!replies[reviewId]) {
+			fetchReplies(reviewId);
+		}
+	};
+
+	// Handle adding a new review
 	const handleAddReview = async () => {
 		if (!newReview.trim()) return;
 		try {
 			await axios.post(`http://localhost:5110/api/review/${videoId}`, {
 				reviewText: newReview,
-        rating: rating,
+				rating: rating,
 			});
-			setNewReview("");
-      setRating(0);
-			fetchReviews(); // Reload reviews
+			setNewReview(""); // Clear the input after posting
+			setRating(0); // Reset the rating
+			fetchReviews(); // Reload the reviews
 		} catch (error) {
 			console.error("Error adding review:", error);
 		}
@@ -55,14 +77,14 @@ const Reviews = ({ videoId }) => {
 		<div className="reviewsContainer">
 			<h3>Comments</h3>
 
-			{/* Review Input */}
+			{/* Input section for adding a new review */}
 			<div className="addReview">
 				<textarea
 					value={newReview}
 					onChange={(e) => setNewReview(e.target.value)}
 					placeholder="Add a review..."
 				/>
-				{/* Video Rating  */}
+				{/* Rating stars for the review */}
 				<div className="rating">
 					{[1, 2, 3, 4, 5].map((star) => (
 						<span
@@ -70,7 +92,7 @@ const Reviews = ({ videoId }) => {
 							className={`star ${star <= rating ? "filled" : ""}`}
 							onClick={() => setRating(star)}
 						>
-							<i class="bi bi-star"></i>
+							<i className="bi bi-star"></i>
 						</span>
 					))}
 				</div>
@@ -79,21 +101,46 @@ const Reviews = ({ videoId }) => {
 				</button>
 			</div>
 
-			{/* Review List */}
+			{/* List of reviews */}
 			<ul className="reviewList">
 				{reviews.length ? (
 					reviews.map((review) => (
-						<li key={review.reviewId}>
-							<p>{review.reviewText}</p>
-							<small>
-								By {review.author} at{" "}
-								{new Date(review.createdAt).toLocaleString()}
-							</small>
+						<li key={review.reviewId} className="reviewItem">
 							<div className="userRating">
-								<p> {review.rating}</p>
-								<i class="bi bi-star-fill"></i>
+								<p>{review.rating}</p>
+								<i className="bi bi-star-fill"></i>
 							</div>
-              <p className="viewReplies">see all replies</p>
+							<div className="reviewContent">
+								<p className="reviewText">{review.reviewText}</p>
+								<small className="reviewDate">
+									By {review.author} 
+									{formatDistanceToNow(new Date(review.createdAt))} ago
+								</small>
+							</div>
+
+							{/* Toggle replies section */}
+							<p
+								className="viewReplies"
+								onClick={() => handleToggleReplies(review.reviewId)}
+							>
+								{openReplies[review.reviewId]
+									? "Hide replies"
+									: "See all replies"}
+							</p>
+							{/* Display replies if they are visible */}
+							{openReplies[review.reviewId] && replies[review.reviewId] && (
+								<ul className="repliesList">
+									{replies[review.reviewId].map((reply) => (
+										<li key={reply.replyId}>
+											<p className="replyText">{reply.replyText}</p>
+											<small>
+												By {reply.author} at{" "}
+												{formatDistanceToNow(new Date(reply.createdAt))} ago
+											</small>
+										</li>
+									))}
+								</ul>
+							)}
 						</li>
 					))
 				) : (

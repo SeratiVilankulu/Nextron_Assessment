@@ -11,7 +11,7 @@ namespace api.Interfaces
   {
     Task<List<Review>> GetAllAsync();
     Task<Review?> GetByIdAsync(int id);
-    Task<List<Review>> GetByVideoIdAsync(int imageId);
+    Task<List<Review>> GetByVideoIdAsync(int videoId);
     Task<Review> CreateAsync(Review reviewModel);
     Task<Review?> UpdateAsync(int id, Review reviewModel);
     Task<Review?> DeleteAsync(int id);

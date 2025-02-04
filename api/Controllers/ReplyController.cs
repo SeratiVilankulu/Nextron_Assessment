@@ -6,6 +6,7 @@ using api.Data;
 using api.Dto.Reply;
 using api.Interfaces;
 using api.Mappers;
+using api.Models;
 using Microsoft.AspNetCore.Mvc;
 
 namespace api.Controllers
@@ -51,6 +52,20 @@ namespace api.Controllers
       }
 
       return Ok(reply.ToReplyDto());
+    }
+
+    //Get a review by review Id
+    [HttpGet("review/{reviewId:int}")]
+    public async Task<ActionResult<Reply>> GetByReviewId(int reviewId)
+    {
+      var replies = await _replyRepo.GetByReviewIdAsync(reviewId);
+
+      if (replies == null || replies.Count == 0)
+      {
+        return NotFound($"No replies found for ReviewId {reviewId}");
+      }
+
+      return Ok(replies);
     }
 
     [HttpPost("{reviewId:int}")]

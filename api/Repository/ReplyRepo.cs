@@ -49,6 +49,14 @@ namespace api.Repository
       return await _context.Replies.FindAsync(id);
     }
 
+    public async Task<List<Reply>> GetByReviewIdAsync(int reviewId)
+    {
+      return await _context.Replies
+     .Where(c => c.ReviewId == reviewId)
+     .Include(c => c.AppUsers)
+     .ToListAsync();
+    }
+
     public async Task<Reply?> UpdateAsync(int id, Reply replyModel)
     {
       var existingReply = await _context.Replies.FindAsync(id);

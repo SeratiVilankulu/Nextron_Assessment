@@ -269,7 +269,7 @@ h6 {
 	display: flex;
 	align-items: center;
 	justify-content: center;
-	height: 90vh;
+	height: 60vh;
 	font-family: "Poppins", sans-serif;
 	font-size: 30px;
 	color: rgb(185, 185, 185);
@@ -358,30 +358,30 @@ h6 {
 }
 
 .category {
-  width: 100%;
-  padding: 10px 15px;
-  font-size: 16px;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-  background-color: #fff;
-  transition: border-color 0.3s ease;
-  cursor: pointer;
+	width: 100%;
+	padding: 10px 15px;
+	font-size: 16px;
+	border: 1px solid #ccc;
+	border-radius: 5px;
+	background-color: #fff;
+	transition: border-color 0.3s ease;
+	cursor: pointer;
 }
 
 .category:focus {
-  border-color: #007bff;
-  outline: none;
+	border-color: #007bff;
+	outline: none;
 }
 
 .category option {
-  font-size: 16px;
-  padding: 10px;
-  background-color: #fff;
-  color: #333;
+	font-size: 16px;
+	padding: 10px;
+	background-color: #fff;
+	color: #333;
 }
 
 .category option:hover {
-  background-color: #f1f1f1;
+	background-color: #f1f1f1;
 }
 
 /* .inputBox .imageInput {
@@ -561,6 +561,28 @@ textarea:focus {
 	position: relative;
 	left: 25vh;
 	top: 8vh;
+}
+
+@media (min-width: 567px) and (max-width: 1300px) {
+	.videoDetailsContainer {
+		display: flex;
+		flex-direction: column;
+		max-width: 640px;
+		position: relative;
+		left: 6vh;
+		top: 8vh;
+	}
+}
+
+@media (min-width: 1301px) and (max-width: 1440px) {
+	.videoDetailsContainer {
+		display: flex;
+		flex-direction: column;
+		max-width: 760px;
+		position: relative;
+		left: 6vh;
+		top: 8vh;
+	}
 }
 
 .closeButton {
@@ -789,12 +811,44 @@ textarea::placeholder {
 	background-color: #cf2531;
 }
 
-.reviewList {
+.reviewList{
+   overflow-y: scroll;
+}
+
+.reviewItem {
+  display: flex;
+  flex-direction: column;
+  border-bottom: 1px solid #ddd;
+  padding: 10px;
+}
+
+.reviewContent {
+   display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.reviewText {
+  font-size: 16px;
+  margin-bottom: 5px;
+}
+
+.reviewDate {
+  font-size: 12px;
+  color: gray;
+}
+
+.reviewList, .repliesList {
 	list-style: none;
 	padding: 0;
 }
 
-li {
+.reviewText, .replyText {
+	font-size: 15px;
+      font-weight: 500;
+}
+
+.reviewList li {
 	background: #f9f9f9;
 	padding: 1rem;
 	margin: 0.5rem 0;
@@ -804,7 +858,8 @@ li {
 small {
 	display: block;
 	color: #555;
-	margin-top: 0.5rem;
+	margin-top: 0.3rem;
+  font-size: 12px;
 }
 
 .userRating {
@@ -820,4 +875,63 @@ small {
 .viewReplies {
 	font-weight: 800;
 	font-size: 12px;
+  color:#f02d3a;
+  cursor: pointer;
+}
+
+.repliesList {
+  list-style: none;
+  padding-left: 20px; 
+  margin-top: 5px;
+}
+
+.repliesList li{
+  background-color: #f9f9f9;
+  padding: 8px;
+  border-radius: 8px;
+  margin-top: 5px;
+}
+
+/* My Posts Styles */
+.title {
+  width: Hug (324px) px;
+  height: Hug (68px) px;
+  top: 105px;
+  left: 303px;
+  padding: 10px 0px 0px 0px;
+  font-size: 30px;
+  text-align: center;
+  margin-bottom: 10px;
+  margin-top: 90px;
+  font-weight: 600;
+  color: rgb(15, 60, 76);
+}
+
+.bi.bi-chat-right {
+  color: rgb(15, 60, 76);
+  position: absolute;
+  left: 660px;
+  top: 865px;
+  font-size: 20px;
+  cursor: pointer;
+}
+
+.message {
+  display: flex;
+  justify-content: center;
+}
+
+/* .noPosts {
+  position: absolute;
+  top: 50vh;
+  font-family: "Poppins", sans-serif;
+  font-size: 30px;
+  color: rgb(185, 185, 185);
+} */
+
+.bi.bi-images {
+  position: absolute;
+  top: 330px;
+  font-size: 70px;
+  color: rgb(185, 185, 185);
 }

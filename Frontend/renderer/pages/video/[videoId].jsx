@@ -5,6 +5,7 @@ import axios from "axios";
 import Navigation from "../../components/navigation";
 import Modal from "../../components/modal";
 import Reviews from "../../components/reviews";
+import { formatDistanceToNow } from "date-fns";
 
 const VideoDetails = () => {
 	const router = useRouter();
@@ -131,7 +132,9 @@ const VideoDetails = () => {
 												></i>
 											)}
 											<div className="description">
-												<p>{updatedVideo.createdAt}</p>
+												<p>
+                          {formatDistanceToNow(new Date(updatedVideo.createdAt))} ago
+                        </p>
 												<p>{updatedVideo.description}</p>
 											</div>
 										</div>

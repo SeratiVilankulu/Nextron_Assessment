@@ -61,6 +61,14 @@ namespace api.Repository
       return await _context.Videos.Include(r => r.Reviews).FirstOrDefaultAsync(i => i.VideoId == id);
     }
 
+    public async Task<List<Video>> GetByUserIdAsync(string userId)
+    {
+      return await _context.Videos
+        .Where(i => i.AppUserId == userId)
+        .Include(c => c.Reviews)
+        .ToListAsync();
+    }
+
     public async Task<Video?> UpdateAsync(int id, UpdateVideoRequestDto updateDto)
     {
       var existingVideo = await _context.Videos.FindAsync(id);
