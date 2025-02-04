@@ -6,8 +6,11 @@ using api.Data;
 using api.Dto.Video;
 using api.Interfaces;
 using api.Mappers;
+using api.Models;
 using MediaToolkit;
+using api.Extensions;
 using MediaToolkit.Model;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -19,11 +22,13 @@ namespace api.Controllers
   {
     private readonly ApplicationDBContext _context;
     private readonly IVideoRepository _videoRepo;
+    private readonly UserManager<AppUser> _userManager;
 
-    public VideoController(ApplicationDBContext context, IVideoRepository videoRepo)
+    public VideoController(ApplicationDBContext context, IVideoRepository videoRepo, UserManager<AppUser> userManager)
     {
       _videoRepo = videoRepo;
       _context = context;
+      _userManager = userManager;
     }
 
     [HttpGet]
@@ -53,11 +58,14 @@ namespace api.Controllers
       return Ok(video.ToVideoDto());
     }
 
-    [HttpPost]
-    public async Task<IActionResult> Create([FromBody] CreateVideoRequestDto videoDto)
+    [HttpPost("{categoryId:int}")]
+    public async Task<IActionResult> Create([FromBody] CreateVideoRequestDto videoDto, [FromRoute] int categoryId)
     {
       if (!ModelState.IsValid)
         return BadRequest(ModelState);
+
+      // var userName = User.GetUsername();
+      // var user = await _userManager.FindByNameAsync(userName);
 
       try
       {
@@ -83,8 +91,8 @@ namespace api.Controllers
         videoModel.CreatedAt = DateOnly.FromDateTime(DateTime.Now);
         videoModel.videoDuration = inputFile.Metadata.Duration;
 
-        // Save to the database
-        await _videoRepo.CreateAsync(videoModel);
+        // Pass both videosDto and categoryID to CreateAsync
+        videoModel = await _videoRepo.CreateAsync(videoModel, categoryId);
 
         // Clean up temporary file
         System.IO.File.Delete(tempFilePath);

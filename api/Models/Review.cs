@@ -16,6 +16,7 @@ namespace api.Models
     public int? VideoId { get; set; }
 
     public string? AppUserId { get; set; }
+    public AppUser? AppUsers { get; set; }
 
     public List<Reply> Replies { get; set; } = new List<Reply>();
   }

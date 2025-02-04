@@ -6,6 +6,7 @@ using api.Data;
 using api.Dto.Review;
 using api.Interfaces;
 using api.Mappers;
+using api.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -25,6 +26,7 @@ namespace api.Controllers
       _videoRepo = videoRepo;
     }
 
+    //Get all reviews
     [HttpGet]
     public async Task<IActionResult> GetAll()
     {
@@ -38,6 +40,7 @@ namespace api.Controllers
       return Ok(reviews);
     }
 
+    //Get a review by its Id
     [HttpGet("{reviewId:int}")]
     public async Task<IActionResult> GetById([FromRoute] int reviewId)
     {
@@ -54,6 +57,22 @@ namespace api.Controllers
       return Ok(review.ToReviewDto());
     }
 
+    //Get a review by video Id
+    [HttpGet("video/{videoId}")]
+    public async Task<ActionResult<Review>> GetByVideoId(int videoId)
+    {
+      var reviews = await _reviewRepo.GetByVideoIdAsync(videoId);
+
+      if (reviews == null || reviews.Count == 0)
+      {
+        return NotFound($"No reviews found for VideoId {videoId}");
+      }
+
+      return Ok(reviews);
+    }
+
+
+    //Posting A review
     [HttpPost("{videoId:int}")]
     public async Task<IActionResult> Create([FromRoute] int videoId, [FromBody] CreateReviewDto reviewDto)
     {
@@ -67,12 +86,13 @@ namespace api.Controllers
 
       var reviewModel = reviewDto.ToReviewFromCreate(videoId);
       reviewModel.CreatedAt = DateOnly.FromDateTime(DateTime.Now);
-      
+
       await _reviewRepo.CreateAsync(reviewModel);
 
       return CreatedAtAction(nameof(GetById), new { reviewId = reviewModel.ReviewId }, reviewModel.ToReviewDto());
     }
 
+    //Update a review
     [HttpPatch]
     [Route("{reviewId:int}")]
     public async Task<IActionResult> Update([FromRoute] int reviewId, [FromBody] UpdateReviewRequestDto updateDto)
@@ -90,6 +110,7 @@ namespace api.Controllers
       return Ok(review.ToReviewDto());
     }
 
+    //Delete a review
     [HttpDelete]
     [Route("{reviewId:int}")]
     public async Task<IActionResult> Delete([FromRoute] int reviewId)

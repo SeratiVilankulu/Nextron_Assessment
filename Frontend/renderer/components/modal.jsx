@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { MdClose } from "react-icons/md";
 
 const Modal = ({ closeModal, videoId, defaultValue }) => {
 	const [formError, setFormError] = useState({});
@@ -75,12 +74,8 @@ const Modal = ({ closeModal, videoId, defaultValue }) => {
 			<div className="modal">
 				<form className="form" onSubmit={validateFormInput}>
 					<h1 className="title">Image Details Update</h1>
-					<button
-						type="button"
-						className="closeButton"
-						onClick={closeModal}
-					>
-						<MdClose />
+					<button type="button" className="closeButton" onClick={closeModal}>
+						<i className="bi bi-x"></i>
 					</button>
 					<div className="formGroup">
 						<label>Image Title</label>
@@ -106,11 +101,7 @@ const Modal = ({ closeModal, videoId, defaultValue }) => {
 						/>
 					</div>
 					<p className="errorMessage">{formError.description}</p>
-					<button
-						type="submit"
-						className="saveButton"
-						disabled={submitting}
-					>
+					<button type="submit" className="saveButton" disabled={submitting}>
 						Save Details
 					</button>
 				</form>

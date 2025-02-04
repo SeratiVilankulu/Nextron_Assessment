@@ -9,6 +9,7 @@ const UploadPage = () => {
 		Title: "",
 		Category: "",
 		Description: "",
+    ThumbnailURL: "",
 		VideoURL: "",
 	});
 
@@ -32,17 +33,17 @@ const UploadPage = () => {
 		const fetchCategories = async () => {
 			try {
 				const response = await axios.get("http://localhost:5110/api/category");
-				// Store the entire category list including categoryID
+				// Store the entire category list including categoryId
 				setCategories(response.data);
 			} catch (error) {
-				setErrorMsg("Cannot fetch categories");
+				setErrorMsg({ api: "Cannot fetch categories" });
 			}
 		};
 		fetchCategories();
 	}, []);
 
 	// Function to handle changes in form input fields
-	const handleImageInput = (name, value) => {
+	const handleVideoInput = (name, value) => {
 		setFormInput({
 			...formInput,
 			[name]: value,
@@ -57,53 +58,53 @@ const UploadPage = () => {
 
 		let inputError = {};
 
-		// Validate image title
+		// Validate title
 		if (!formInput.Title) {
-			inputError.Title = "Image title cannot be empty";
+			inputError.Title = "Title cannot be empty";
 		}
 
-		// Validate image category
+		// Validate category
 		if (!formInput.Category) {
 			inputError.Category = "Category cannot be empty";
 		}
 
-		// Validate image description
+		// Validate description
 		if (!formInput.Description) {
 			inputError.Description = "Description cannot be empty";
 		}
 
-		//Check if Description is more than 50 characters
-		if (formInput.Description.length > 50) {
-			inputError.Description = "Description cannot be more than 50 characters";
+		//Check if Description is more than 250 characters
+		if (formInput.Description.length > 250) {
+			inputError.Description = "Description cannot be more than 250 characters";
 		}
 
 		// Validate file selection
 		if (!imageFile || !videoFile) {
 			inputError.file = "Please select a file to upload.";
 		} else {
-			// If it's an image file
-			if (imageFile === "image") {
+			// If it's an Thumbnail file
+			if (imageFile && imageFile.type.startsWith("image/")) {
 				// Check if image is the correct type
 				if (!imageFile.name.match(/\.(jpg|png|gif)$/)) {
 					inputError.file =
 						"Incorrect file type, please upload an image. File type: PNG, JPG, or GIF.";
 				}
-				// Check if image size is greater than 5MB
-				else if (imageFile.size > 5000000) {
+				// Check if Thumbnail size is greater than 5MB
+				else if (imageFile.size > 500000000) {
 					inputError.file =
 						"Image file is too large. Image size must be less than 5MB.";
 				}
 			}
 
 			// If it's a video file
-			else if (videoFile === "video") {
+			else if (videoFile && videoFile.type.startsWith("video/")) {
 				// Check if video is the correct type (MP4, MOV, etc.)
 				if (!videoFile.name.match(/\.(mp4|mov|avi)$/)) {
 					inputError.file =
 						"Incorrect file type, please upload a video. File type: MP4, MOV, or AVI.";
 				}
 				// Check if video size is greater than 50MB (for example)
-				else if (videoFile.size > 50000000) {
+				else if (videoFile.size > 500000000) {
 					inputError.file =
 						"Video file is too large. Video size must be less than 50MB.";
 				}
@@ -133,8 +134,6 @@ const UploadPage = () => {
 				setVideoFile(file);
 			}
 		}
-
-		console.log(files);
 	};
 
 	// Function to handle drag over event
@@ -156,10 +155,8 @@ const UploadPage = () => {
 
 	// Function to handle form submission
 	const handleSubmit = async () => {
-		console.log("Form input on submit:", formInput); // Log what is in the forInput fields
-
 		const selectedCategory = categories.find(
-			(category) => category.categoryID.toString() === formInput.Category
+			(category) => category.categoryId.toString() === formInput.Category
 		);
 
 		if (!selectedCategory) {
@@ -172,22 +169,31 @@ const UploadPage = () => {
 
 		// object which holds all data from form
 		const formData = new FormData();
-		formData.append("file", file);
-		formData.append("upload_preset", "sbivzvzz");
+		formData.append("upload_preset", "gfswaht");
 		formData.append("Title", formInput.Title);
-		formData.append("Category", selectedCategory.categoryID); // Use selected categoryID
+		formData.append("Category", selectedCategory.categoryId); // Use selected categoryId
 		formData.append("Description", formInput.Description);
-		formData.append("VideoURL", formInput.VideoURL);
-
-		console.log(formInput);
+		formData.append("Thumbnail", imageFile);
+		formData.append("file", videoFile);
 
 		try {
-			const response = await axios.post(
-				"https://api.cloudinary.com/v1_1/dchdvpqew/image/upload", // URL to upload image to cloudinary
+			const videoResponse = await axios.post(
+				"https://api.cloudinary.com/v1_1/dchdvpqew/video/upload",
+				// URL to upload thumbnail and video to cloudinary
 				formData
 			);
 
-			if (response.status === 200) {
+       const imageFormData = new FormData();
+				imageFormData.append("upload_preset", "gfswaht");
+				imageFormData.append("file", imageFile); // Only upload image
+
+				const imageResponse = await axios.post(
+					"https://api.cloudinary.com/v1_1/dchdvpqew/image/upload",
+					imageFormData
+				);
+
+
+			if (videoResponse.status === 200 && imageResponse.status === 200) {
 				setSuccessMsg("File uploaded successfully.");
 				setImageFile(null);
 				setVideoFile(null);
@@ -195,20 +201,20 @@ const UploadPage = () => {
 					Title: "",
 					Category: "",
 					Description: "",
-					ImageURL: "",
+					ThumbnailURL: "",
 					VideoURL: "",
 				});
 
-				// Now post the image information to the database
+				// Post the video information to the database
 				await handlePostToDB(
 					{
 						Title: formInput.Title,
-						Category: selectedCategory.categoryID,
+						Category: selectedCategory.categoryId,
 						Description: formInput.Description,
-						ImageURL: response.data.url,
-						VideoURL: response.data.url,
+						ThumbnailURL: imageResponse.data.url,
+						VideoURL: videoResponse.data.url,
 					},
-					selectedCategory.categoryID
+					selectedCategory.categoryId
 				); // Make selectedCategory accessible in handlePostToDB function, since it's defined outside its scope
 			} else {
 				setErrorMsg({ api: "Failed to upload file" });
@@ -221,19 +227,19 @@ const UploadPage = () => {
 		}
 	};
 
-	// Function to push image information to Database
-	const handlePostToDB = async (imageData, categoryID) => {
+	// Function to push video information to Database
+	const handlePostToDB = async (videoData, categoryId) => {
 		try {
 			await axios.post(
-				`http://localhost:/api/images/${categoryID}`,
-				imageData,
-				{
-					headers: {
-						Authorization: `Bearer ${user.verificationToken}`,
-					},
-				}
+				`http://localhost:5110/api/video/${categoryId}`,
+				videoData,
+				// {
+				// 	headers: {
+				// 		Authorization: `Bearer ${user.verificationToken}`,
+				// 	},
+				// }
 			);
-			console.log("Details sent to DB:", imageData);
+			console.log("Details sent to DB:", videoData);
 		} catch (error) {
 			console.error(error);
 		}
@@ -248,36 +254,36 @@ const UploadPage = () => {
 				<div className="mainPage">
 					<Navigation />
 					<div className="uploadWrapper">
-						<h1 className="uploadHeading">Image Upload</h1>
+						<h1 className="uploadHeading">Video Upload</h1>
 						<form onSubmit={validateFormSubmit}>
 							<div className="inputContainer">
 								<div className="uploadInputBox">
-									<p className="uploadName">Image Title</p>
+									<p className="uploadName">Title</p>
 									<input
 										type="text"
 										name="Title"
 										className="uploadTitle"
 										value={formInput.Title}
-										onChange={(e) => handleImageInput("Title", e.target.value)}
+										onChange={(e) => handleVideoInput("Title", e.target.value)}
 									/>
 									<p className="errorMessage">{errorMsg.Title}</p>
 								</div>
 								<div className="uploadInputBox">
-									<p className="uploadName">Image Category</p>
+									<p className="uploadName">Category</p>
 									<select
 										className="category"
 										value={formInput.Category}
 										onChange={(e) =>
-											handleImageInput("Category", e.target.value)
+											handleVideoInput("Category", e.target.value)
 										}
 									>
 										<option value="">Select a category</option>
 										{categories.map((category) => (
 											<option
-												key={category.categoryID}
-												value={category.categoryID}
+												key={category.categoryId}
+												value={category.categoryId}
 											>
-												{category.categoryType}
+												{category.categoryName}
 											</option>
 										))}
 									</select>
@@ -286,14 +292,14 @@ const UploadPage = () => {
 							</div>
 
 							<div className="uploadInputBox">
-								<p className="uploadName">Image Description</p>
+								<p className="uploadName">Description</p>
 								<textarea
 									type="text"
 									name="Description"
 									className="description"
 									value={formInput.Description}
 									onChange={(e) =>
-										handleImageInput("Description", e.target.value)
+										handleVideoInput("Description", e.target.value)
 									}
 								/>
 								<p className="errorMessage">{errorMsg.Description}</p>
@@ -312,11 +318,11 @@ const UploadPage = () => {
 										<p className="uploadOption">or</p>
 										<input
 											type="file"
-											name="ImageURL"
+											name="ThumbnailURL"
 											className="fileInput"
 											id="imageFile"
 											accept="image/*"
-											value={formInput.ImageURL}
+											value={formInput.ThumbnailURL}
 											onChange={handleFileChange}
 										/>
 										<label htmlFor="file" className="fileLabel">

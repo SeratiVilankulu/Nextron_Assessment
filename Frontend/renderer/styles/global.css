@@ -155,6 +155,7 @@ h6 {
 	padding: 0px 60px;
 	margin: 40px 20px 0px 50px;
 	position: relative;
+	top: 30px;
 }
 
 /* Container for the image and overlay */
@@ -344,7 +345,6 @@ h6 {
 }
 
 .uploadInputBox .category {
-	font-family: "Poppins", sans-serif;
 	width: 400px;
 	height: 38px;
 	padding: 5px 10px;
@@ -355,6 +355,33 @@ h6 {
 	border-radius: 4px;
 	border-color: #072635;
 	margin-bottom: 5px;
+}
+
+.category {
+  width: 100%;
+  padding: 10px 15px;
+  font-size: 16px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  background-color: #fff;
+  transition: border-color 0.3s ease;
+  cursor: pointer;
+}
+
+.category:focus {
+  border-color: #007bff;
+  outline: none;
+}
+
+.category option {
+  font-size: 16px;
+  padding: 10px;
+  background-color: #fff;
+  color: #333;
+}
+
+.category option:hover {
+  background-color: #f1f1f1;
 }
 
 /* .inputBox .imageInput {
@@ -522,10 +549,18 @@ textarea:focus {
 }
 
 /* Individual Video Details */
+.mediaWrapper {
+	display: grid;
+	grid-template-columns: 1.5fr 1fr;
+}
 
 .videoDetailsContainer {
-	margin-left: 25vh;
-	margin-top: 8vh;
+	display: flex;
+	flex-direction: column;
+	max-width: 800px;
+	position: relative;
+	left: 25vh;
+	top: 8vh;
 }
 
 .closeButton {
@@ -540,23 +575,28 @@ textarea:focus {
 	font-size: 24px;
 }
 
-/*Images styles*/
+/*Video styles*/
 /* Container for the video to be played */
 .videoDetailsCard {
-	overflow: hidden;
-	width: 970px;
+	position: relative;
+	width: 100%;
+	max-width: 870px;
+	aspect-ratio: 16 / 9;
 }
 
 /* Thumbnail itself */
 .thumbnailWrapper {
 	position: relative;
-	display: inline-block;
+	width: 100%;
+	height: 100%;
 }
 
-img {
+img,
+video {
 	width: 100%;
-	object-fit: cover;
+	height: 100%;
 	border-radius: 12px;
+	object-fit: cover;
 }
 
 .playButton {
@@ -576,15 +616,10 @@ img {
 	opacity: 1;
 }
 
-video {
-	width: 100%;
-	border-radius: 12px;
-}
-
 .details h2 {
 	margin: 0;
 	font-size: 20px;
-	font-weight: 700;
+	font-weight: 900;
 	word-wrap: break-word;
 	font-family: "Manrope", sans-serif;
 	color: #072635;
@@ -597,10 +632,29 @@ video {
 	font-weight: 700;
 }
 
-/* Flex container for title and edit icon */
-.titleContainer {
+.userDetails .userProfile {
 	display: flex;
-	margin-bottom: 10px;
+	gap: 5px;
+}
+
+.details1 {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+}
+
+.userProfile h3 {
+	margin: 0;
+	font-size: 16px;
+	font-weight: 800;
+	word-wrap: break-word;
+	font-family: "Manrope", sans-serif;
+	color: #072635;
+}
+
+.description {
+	height: auto;
+	margin: 10px 0px;
 }
 
 /* Edit icon styles */
@@ -614,13 +668,6 @@ video {
 	top: 8px;
 }
 
-/* Container for icons */
-.icons {
-	display: flex;
-	justify-content: space-between;
-	gap: 0px;
-}
-
 /* Individual icon styling */
 .bi.bi-trash3 {
 	border: none;
@@ -630,7 +677,7 @@ video {
 	margin: 10px 10px;
 }
 
-.replyContainer {
+.actionsContainer {
 	display: flex;
 	align-items: center;
 }
@@ -642,7 +689,7 @@ video {
 	margin: 0px 10px;
 }
 
-.commentCount {
+/* .commentCount {
 	color: rgb(15, 60, 76);
 	font-size: 15px;
 	font-weight: 600;
@@ -655,16 +702,12 @@ video {
 	border: none;
 	border-radius: 5px;
 	cursor: pointer;
-}
+} */
 
-.saveButton:disabled {
+/* .saveButton:disabled {
 	background-color: #ccc;
 	cursor: not-allowed;
-}
-
-.formGroup {
-	margin-bottom: 15px;
-}
+} */
 
 .errorMessage {
 	color: #af2020;
@@ -673,20 +716,108 @@ video {
 }
 
 /* Responsive adjustments */
-@media (max-width: 768px) {
-	.imageCard {
-		width: 100%; /* Make image responsive */
-		height: auto;
+@media (max-width: 600px) {
+	.mediaWrapper {
+		max-width: 100%;
 	}
 
-	.overlay {
-		padding: 10px;
-		flex-direction: column; /* Stack title and icon on smaller screens */
-		align-items: flex-start;
+	.playButton {
+		font-size: 48px;
 	}
+}
 
-	.edit {
-		margin-left: 0;
-		margin-top: 5px;
-	}
+/*Comments Section styles*/
+.reviewsContainer {
+	padding: 1rem;
+	max-width: 650px;
+	margin: 1rem;
+	position: relative;
+	top: 6vh;
+}
+
+h3 {
+	margin: 0.53rem 0;
+}
+
+.addReview {
+	display: flex;
+	flex-direction: column;
+	margin-bottom: 1rem;
+}
+
+textarea {
+	resize: none;
+	background-color: #f2f2f2;
+	margin-bottom: 0.5rem;
+	border: none;
+	border-bottom: 1.5px solid rgba(160, 159, 159, 0.389);
+	border-radius: 4px;
+	transition: border-color 0.3s ease;
+}
+
+textarea::placeholder {
+	font-family: "Manrope", sans-serif;
+}
+
+.rating {
+	display: flex;
+	gap: 5px;
+	margin: 0.5rem 0;
+	cursor: pointer;
+}
+
+.star {
+	font-size: 1rem;
+	color: lightgray;
+}
+
+.star.filled {
+	color: #ffc107;
+}
+
+.postReview {
+	align-self: flex-end;
+	background-color: #f02d3a;
+	color: white;
+	border: none;
+	padding: 0.5rem 1rem;
+	border-radius: 8px;
+	cursor: pointer;
+}
+
+.postReview:hover {
+	background-color: #cf2531;
+}
+
+.reviewList {
+	list-style: none;
+	padding: 0;
+}
+
+li {
+	background: #f9f9f9;
+	padding: 1rem;
+	margin: 0.5rem 0;
+	border-radius: 8px;
+}
+
+small {
+	display: block;
+	color: #555;
+	margin-top: 0.5rem;
+}
+
+.userRating {
+	display: flex;
+	gap: 5px;
+	align-items: center;
+}
+
+.userRating .bi.bi-star-fill {
+	color: #ffc107;
+}
+
+.viewReplies {
+	font-weight: 800;
+	font-size: 12px;
 }

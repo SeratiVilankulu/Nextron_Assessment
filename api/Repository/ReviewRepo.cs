@@ -51,6 +51,14 @@ namespace api.Repository
       return await _context.Reviews.Include(r => r.Replies).FirstOrDefaultAsync(i => i.ReviewId == id);
     }
 
+    public async Task<List<Review>> GetByVideoIdAsync(int videoId)
+    {
+      return await _context.Reviews
+     .Where(c => c.VideoId == videoId)
+     .Include(c => c.AppUsers)
+     .ToListAsync();
+    }
+
     public Task<bool> ReviewExists(int id)
     {
       return _context.Reviews.AnyAsync(v => v.ReviewId == id);

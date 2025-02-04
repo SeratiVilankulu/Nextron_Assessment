@@ -7,10 +7,9 @@ import axios from "axios";
 import Navigation from "../components/navigation";
 
 export default function HomePage() {
-	const [message, setMessage] = React.useState("No message found");
 	const [video, setVideos] = useState([]); // State to store fetched videos
 	const [currentPage, setCurrentPage] = useState(1); // Number of images to display per page
-	const videosPerPage = 6;
+	const videosPerPage = 100;
 	const [loading, setLoading] = useState(false); // Track loading state
 	const router = useRouter();
 	const videoContainerRef = useRef(null);

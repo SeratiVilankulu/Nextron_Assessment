@@ -19,25 +19,35 @@ namespace api.Repository
       _context = context;
     }
 
-    public async Task<Video> CreateAsync(Video videoModel)
+    public async Task<Video> CreateAsync(Video videoModel, int categoryId)
     {
-      await _context.Videos.AddAsync(videoModel);
+      var video = new Video
+      {
+        Title = videoModel.Title,
+        Description = videoModel.Description,
+        ThumbnailURL = videoModel.ThumbnailURL,
+        VideoURL = videoModel.VideoURL,
+        CategoryId = categoryId,
+        // AppUserId = userId
+      };
+      _context.Videos.Add(video);
       await _context.SaveChangesAsync();
-      return videoModel;
+
+      return video;
     }
 
     public async Task<Video?> DeleteAsync(int id)
     {
       var videoModel = await _context.Videos.FirstOrDefaultAsync(x => x.VideoId == id);
 
-      if(videoModel == null)
+      if (videoModel == null)
       {
         return null;
       }
 
       _context.Videos.Remove(videoModel);
       await _context.SaveChangesAsync();
-      
+
       return videoModel;
     }
 
@@ -55,7 +65,7 @@ namespace api.Repository
     {
       var existingVideo = await _context.Videos.FindAsync(id);
 
-      if(existingVideo == null)
+      if (existingVideo == null)
       {
         return null;
       }
