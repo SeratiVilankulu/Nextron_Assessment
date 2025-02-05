@@ -21,7 +21,6 @@ namespace api.Mappers
         IsPublic = videoModel.IsPublic,
         CreatedAt = videoModel.CreatedAt,
         Reviews = videoModel.Reviews.Select(r => r.ToReviewDto()).ToList(),
-        // CreatorUserName = videoModel.AppUser != null ? videoModel.AppUser.UserName : "Unknown"
       };
     }
 

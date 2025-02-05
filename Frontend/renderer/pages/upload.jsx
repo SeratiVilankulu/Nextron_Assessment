@@ -14,6 +14,8 @@ const UploadPage = () => {
     IsPublic: false,
   });
 
+  const [user, setUser] = useState(null);
+
   useEffect(() => {
     // Access localStorage only on the client side
     const userData = localStorage.getItem("user");
@@ -394,7 +396,7 @@ const UploadPage = () => {
 							<div className="btn">
 								<button
 									type="submit"
-									className="submitBtn"
+									className="submitButton"
 									disabled={submitting}
 								>
 									{submitting ? "Submitting..." : "Upload"}

@@ -12,7 +12,7 @@ const Dashboard = () => {
 	const [currentPage, setCurrentPage] = useState(1); // Number of images to display per page
 	const videosPerPage = 100;
 	const [loading, setLoading] = useState(false); // Track loading state
-	const router = useRouter();
+	const router = useRouter(); 
 	const videoContainerRef = useRef(null);
 	const [user, setUser] = useState(null); // State to store logged in user
 
@@ -24,20 +24,6 @@ const Dashboard = () => {
 			window.location.href = "/login"; // Redirect to login if no user
 		}
 	}, []);
-
-    // Fetch the Users from the backend
-    useEffect(() => {
-      const fetchUsers = async () => {
-        try {
-          const response = await axios.get("http://localhost:5110/api/users");
-          setUser(response.data);
-        } catch (error) {
-          console.error("An error occurred while fetching users", error);
-        }
-      };
-  
-      fetchUsers();
-    }, []);
 
 	// Fetch the uploaded thumbnails from the backend
 	useEffect(() => {
@@ -137,7 +123,9 @@ const Dashboard = () => {
 											{video.rating} <i className="bi bi-star-fill"></i>
 										</div>
 										<div className="videoDetails">
-											<span className="creatorName">{video.appUserId}</span>
+											<span className="creatorName">
+												{video.creatorUserName}
+											</span>
 											<span className="videoDate">
 												{formatDistanceToNow(new Date(video.createdAt))} ago
 											</span>
@@ -154,6 +142,6 @@ const Dashboard = () => {
 			</div>
 		</React.Fragment>
 	);
-}
+};
 
 export default Dashboard;

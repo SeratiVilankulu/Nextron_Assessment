@@ -3,7 +3,6 @@ import Head from "next/head";
 import { useRouter } from "next/router";
 import axios from "axios";
 import Navigation from "../../components/navigation";
-// import Modal from "../../components/modal";
 import Reviews from "../../components/reviews";
 import { formatDistanceToNow } from "date-fns";
 
@@ -15,12 +14,12 @@ const VideoDetails = () => {
 		description = "",
 		videoURL = "",
 		createdAt = "",
-		fromMyLibrary = "false",
+		MyPosts = "false", // Flag to check if the video is accessed through 'My Posts'
 	} = router.query;
 
-	const [user, setUser] = useState(null); // State to store logged in user
+	const [user, setUser] = useState(null);
+	const [openModal, setOpenModal] = useState(false);
 	const [editIcon, setShowEditIcon] = useState(false);
-	const [actions, setShowActions] = useState(false);
 	const [deleteIcon, setShowDeleteIcon] = useState(false);
 	const [updatedVideo, setUpdatedVideo] = useState({
 		videoURL,
@@ -29,56 +28,56 @@ const VideoDetails = () => {
 		videoId,
 	});
 	const [ratingCount, setRatingCount] = useState(0);
-	const [openModal, setOpenModal] = useState(false);
 	const [isPlaying, setIsPlaying] = useState(false);
 
-	// useEffect(() => {
-	// 	if (video) {
-	// 		setShowEditIcon(fromMyLibrary === "true"); //Show edit icon in MyLibrary
-	// 		setShowDeleteIcon(fromMyLibrary === "true"); //Show delete icon in MyLibrary
-	// 		setShowActions(fromMyLibrary === "true"); //Show comment actions icon in MyLibrary
-	// 	}
-	// }, [fromMyLibrary]);
-
-	// Fetch the Users from the backend
 	useEffect(() => {
-		const fetchUsers = async () => {
+		// Fetch the logged-in user details
+		const fetchUser = async () => {
 			try {
 				const response = await axios.get("http://localhost:5110/api/users");
 				setUser(response.data);
 			} catch (error) {
-				console.error("An error occurred while fetching users", error);
+				console.error("Error fetching user data:", error);
 			}
 		};
 
-		fetchUsers();
+		fetchUser();
 	}, []);
 
-	// Fetch video details from the backend
 	useEffect(() => {
 		if (videoId) {
-			// Fetch video details from the backend
+			// Fetch video details based on videoId
 			axios
 				.get(`http://localhost:5110/api/video/${videoId}`)
-				.then((response) => setUpdatedVideo(response.data))
+				.then((response) => {
+					setUpdatedVideo(response.data);
+					// Check if the logged-in user is the creator of the video
+					if (user && user.username === response.data.creatorUserName) {
+						// Show edit and delete icons only if user is the creator and accessing from 'My Posts'
+						if (MyPosts === "true") {
+							setShowEditIcon(true);
+							setShowDeleteIcon(true);
+						}
+					}
+				})
 				.catch((error) =>
 					console.error("Error fetching video details:", error)
 				);
 		}
-	}, [videoId]);
+	}, [videoId, user, MyPosts]);
+
+	const playVideo = () => {
+		setIsPlaying(true);
+	};
 
 	const deleteVideo = async (id) => {
 		try {
+			// Send delete request for the video
 			await axios.delete(`http://localhost:5110/api/video/${videoId}`);
-			setTimeout(() => router.push("/home"), 1000);
+			setTimeout(() => router.push("/dashboard"), 1000);
 		} catch (error) {
 			console.error("An error occurred while deleting the video", error);
 		}
-	};
-
-	// Function to play video
-	const playVideo = () => {
-		setIsPlaying(true);
 	};
 
 	const updateVideoDetails = (newDetails) => {
@@ -120,15 +119,14 @@ const VideoDetails = () => {
 												<div className="details1">
 													<h2>{updatedVideo.title}</h2>
 
-													<div className="replyContainer">
-														<i className="bi bi-chat-right"></i>
-														{ratingCount >= 0 && <span>{ratingCount}</span>}
+													{/* Only show edit and delete icons if accessed from 'My Posts' and user is the creator */}
+													{MyPosts === "true" && editIcon && (
 														<i
-															className="bi bi-star-fill"
+															className="bi bi-pencil-fill"
 															onClick={() => setOpenModal(true)}
 														></i>
-													</div>
-													{deleteIcon && (
+													)}
+													{MyPosts === "true" && deleteIcon && (
 														<i
 															onClick={() => deleteVideo(videoId)}
 															className="bi bi-trash3"
@@ -136,16 +134,15 @@ const VideoDetails = () => {
 													)}
 												</div>
 												<div className="userProfile">
-													<p>UserImage</p>
-													<h3>UserName</h3>
+													{user && user.profileImage ? (
+														<img src={user.profileImage} alt="User Profile" />
+													) : (
+														<div>No Profile Image</div> 
+													)}
+													<h3>{updatedVideo.creatorUserName}</h3>
 												</div>
 											</div>
-											{editIcon && (
-												<i
-													className="bi bi-pencil-fill"
-													onClick={() => setOpenModal(true)}
-												></i>
-											)}
+
 											<div className="description">
 												<p>
 													{formatDistanceToNow(
@@ -167,24 +164,12 @@ const VideoDetails = () => {
 									<div className="detailsWrapper">
 										<div className="details">
 											<h2>{updatedVideo.title}</h2>
-											{editIcon && (
-												<i
-													className="bi bi-pencil-fill"
-													onClick={() => setOpenModal(true)}
-												></i>
-											)}
 											<p>{updatedVideo.description}</p>
 											<div className="icons">
 												<div className="actionsContainer">
 													<i className="bi bi-chat-right"></i>
 													{ratingCount >= 0 && <span>{ratingCount}</span>}
 												</div>
-												{deleteIcon && (
-													<i
-														onClick={() => deleteVideo(videoId)}
-														className="bi bi-trash3"
-													></i>
-												)}
 											</div>
 										</div>
 									</div>
@@ -194,8 +179,15 @@ const VideoDetails = () => {
 					</div>
 				</div>
 				{/* Comments and Modal Components */}
-				<Reviews videoId={updatedVideo.videoId} actions={actions} />
-				{/* <Modal closeModal={() => setOpenModal(false)}/> */}
+				<Reviews videoId={updatedVideo.videoId} />
+				{openModal && (
+					<Modal
+						closeModal={() => setOpenModal(false)}
+						defaultValue={updatedVideo}
+						id={video.videoId}
+						updateVideoDetails={updateVideoDetails}
+					/>
+				)}
 			</div>
 		</React.Fragment>
 	);

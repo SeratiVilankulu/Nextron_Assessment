@@ -41,7 +41,9 @@ namespace api.Repository
 
     public async Task<List<Reply>> GetAllAsync()
     {
-      return await _context.Replies.ToListAsync();
+      return await _context.Replies
+      .Include(c => c.AppUser)
+      .ToListAsync();
     }
 
     public async Task<Reply?> GetByIdAsync(int id)
@@ -53,7 +55,7 @@ namespace api.Repository
     {
       return await _context.Replies
      .Where(c => c.ReviewId == reviewId)
-     .Include(c => c.AppUsers)
+     .Include(c => c.AppUser)
      .ToListAsync();
     }
 

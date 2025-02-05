@@ -14,7 +14,7 @@ namespace api.Models
 
     // Foreign Key Properties
     public string? AppUserId { get; set; }
-    public AppUser? AppUsers { get; set; }
+    public AppUser? AppUser { get; set; }
 
     public int? ReviewId { get; set; }
   }

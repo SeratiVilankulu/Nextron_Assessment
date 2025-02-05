@@ -43,7 +43,10 @@ namespace api.Repository
 
     public async Task<List<Review>> GetAllAsync()
     {
-      return await _context.Reviews.Include(r => r.Replies).ToListAsync();
+      return await _context.Reviews
+      .Include(r => r.Replies)
+      .Include(r => r.AppUser)
+      .ToListAsync();
     }
 
     public async Task<Review?> GetByIdAsync(int id)
@@ -55,7 +58,7 @@ namespace api.Repository
     {
       return await _context.Reviews
      .Where(c => c.VideoId == videoId)
-     .Include(c => c.AppUsers)
+     .Include(c => c.AppUser)
      .ToListAsync();
     }
 

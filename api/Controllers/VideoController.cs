@@ -31,6 +31,7 @@ namespace api.Controllers
       _userManager = userManager;
     }
 
+    // Get endpoint to fetch all videos
     [HttpGet]
     public async Task<IActionResult> GetAll()
     {
@@ -39,25 +40,57 @@ namespace api.Controllers
 
       var videos = await _videoRepo.GetAllAsync();
 
-      var videosDto = videos.Select(v => v.ToVideoDto());
+      var videosDto = videos.Select(v => new VideoDto
+      {
+        VideoId = v.VideoId,
+        Title = v.Title,
+        Description = v.Description,
+        ThumbnailURL = v.ThumbnailURL,
+        VideoURL = v.VideoURL,
+        IsPublic = v.IsPublic,
+        CreatedAt = v.CreatedAt,
+        Reviews = v.Reviews.Select(r => r.ToReviewDto()).ToList(),
+        CreatorUserName = v.AppUser != null ? v.AppUser.UserName : "Unknown"
+      }).ToList();
 
-      return Ok(videos);
+      return Ok(videosDto);
     }
 
+    // Get endpoint to fetch a video by its Id
     [HttpGet("{videoId:int}")]
     public async Task<IActionResult> GetById([FromRoute] int videoId)
     {
       if (!ModelState.IsValid)
         return BadRequest(ModelState);
 
+      // Get the video along with user details
       var video = await _videoRepo.GetByIdAsync(videoId);
+
       if (video == null)
       {
         return NotFound();
       }
-      return Ok(video.ToVideoDto());
+
+      // Map to DTO and include the CreatorUserName
+      var videoDto = new VideoDto
+      {
+        VideoId = video.VideoId,
+        Title = video.Title,
+        Description = video.Description,
+        ThumbnailURL = video.ThumbnailURL,
+        VideoURL = video.VideoURL,
+        IsPublic = video.IsPublic,
+        CreatedAt = video.CreatedAt,
+        Reviews = video.Reviews.Select(r => r.ToReviewDto()).ToList(),
+        CreatorUserName = video.AppUser != null ? video.AppUser.UserName : "Unknown",
+        CreatorUserId = video.AppUser?.Id
+      };
+
+      return Ok(videoDto);
     }
 
+
+    // Get endpoint to fetch a video by user Id
     [HttpGet("user/{userId}")]
     public async Task<IActionResult> GetByUserId(string userId)
     {
@@ -69,14 +102,12 @@ namespace api.Controllers
       return Ok(videos);
     }
 
+    //Post endpoint to post a video in a particular category
     [HttpPost("{categoryId:int}")]
     public async Task<IActionResult> Create([FromBody] CreateVideoRequestDto videoDto, [FromRoute] int categoryId)
     {
       if (!ModelState.IsValid)
         return BadRequest(ModelState);
-
-      // var userName = User.GetUsername();
-      // var user = await _userManager.FindByNameAsync(userName);
 
       try
       {
@@ -118,6 +149,7 @@ namespace api.Controllers
       }
     }
 
+    //Update endpoint to update a video details
     [HttpPatch("{videoId:int}")]
     public async Task<IActionResult> Update([FromRoute] int videoId, [FromBody] UpdateVideoRequestDto updateDto)
     {
@@ -133,6 +165,7 @@ namespace api.Controllers
       return Ok(videoModel.ToVideoDto());
     }
 
+    //Delete endpoint to delete a video
     [HttpDelete]
     [Route("{videoId:int}")]
     public async Task<IActionResult> Delete([FromRoute] int videoId)

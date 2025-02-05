@@ -30,81 +30,80 @@ h6 {
 
 /* LoginPage.css */
 .loginContainer {
-  font-family: "Manrope", sans-serif;
-  min-height: 100vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background-color: #EFF6EE;
+	font-family: "Manrope", sans-serif;
+	min-height: 100vh;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	background-color: #eff6ee;
 }
 
 .loginCard {
-  width: 100%;
-  max-width: 400px;
-  background-color: white;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  border-radius: 8px;
+	width: 100%;
+	max-width: 400px;
+	background-color: white;
+	box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+	border-radius: 8px;
 }
 
 .loginCardContent {
-  padding: 2rem;
+	padding: 2rem;
 }
 
 .loginTitle {
-  font-size: 1.75rem;
-  font-weight: bold;
-  color: #072635;
-  margin-bottom: 1.5rem;
+	font-size: 1.75rem;
+	font-weight: bold;
+	color: #072635;
+	margin-bottom: 1.5rem;
 }
 
 .loginForm {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
+	display: flex;
+	flex-direction: column;
+	gap: 1rem;
 }
 
 .formGroup {
-  display: flex;
-  flex-direction: column;
+	display: flex;
+	flex-direction: column;
 }
 
 .formLabel {
-  color: #072635;
-  margin-bottom: 0.5rem;
-  font-weight: 500;
+	color: #072635;
+	margin-bottom: 0.5rem;
+	font-weight: 500;
 }
 
 .formInput {
-  padding: 0.5rem;
-  border: 1px solid #9197AE;
-  border-radius: 4px;
-  outline: none;
+	padding: 0.5rem;
+	border: 1px solid #9197ae;
+	border-radius: 4px;
+	outline: none;
 }
 
 .formInput:focus {
-  border: 2px solid #c3242f;
+	border: 2px solid #c3242f;
 }
 
-.formInput::placeholder{
+.formInput::placeholder {
 	font-family: "Manrope", sans-serif;
 }
 
 .loginButton {
 	font-family: "Manrope", sans-serif;
-  font-weight: 700;
-  background-color: #F02D3A;
-  color: white;
-  padding: 0.75rem;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  text-align: center;
+	font-weight: 700;
+	background-color: #f02d3a;
+	color: white;
+	padding: 0.75rem;
+	border: none;
+	border-radius: 4px;
+	cursor: pointer;
+	text-align: center;
 }
 
 .loginButton:hover {
-  background-color: #c3242f;
+	background-color: #c3242f;
 }
-
 
 .mainContainer {
 	content: "";
@@ -189,6 +188,25 @@ h6 {
 	color: #f02d3a;
 }
 
+.logOutButton {
+	border: none;
+	font-family: "Manrope", sans-serif;
+	font-weight: 600;
+	width: auto;
+	height: 34px;
+	padding: 8px 20px 8px 20px;
+	gap: 10px;
+	background: #f02d3a;
+	color: white;
+	border-radius: 4px;
+	cursor: pointer;
+	transition: all 0.3s ease;
+}
+
+.logOutButton:hover {
+	background-color: #cf2531;
+}
+
 /* Active link styling (if class-based or dynamically applied) */
 .options a.active {
 	border-bottom: 2px solid #f02d3a;
@@ -217,10 +235,6 @@ h6 {
 	height: 44px;
 	background-color: rgba(128, 128, 128, 0.885);
 	border: none;
-}
-
-.profileSettings i {
-	font-size: 20px;
 }
 
 /* Home Page Styles */
@@ -419,7 +433,8 @@ h6 {
 	color: #072635;
 }
 
-.uploadInputBox .videoTitle, .uploadInputBox .category {
+.uploadInputBox .videoTitle,
+.uploadInputBox .category {
 	font-family: "Manrope", sans-serif;
 	width: 400px;
 	height: 38px;
@@ -454,7 +469,7 @@ h6 {
 	height: 100px;
 	padding: 10px;
 	border: 1px solid #aaa8a8;
-  background-color: #f2f2f2;
+	background-color: #f2f2f2;
 	border-radius: 5px;
 	font-size: 14px;
 	color: #072635;
@@ -516,71 +531,71 @@ h6 {
 }
 
 /* Is public toggle */
-.isPublicVideo{
-  margin: 10px 0px;
-  font-size: 0.8rem;
-  font-weight: 700;
-  color: #072635;
+.isPublicVideo {
+	margin: 10px 0px;
+	font-size: 0.8rem;
+	font-weight: 700;
+	color: #072635;
 }
 
 .switch {
-  position: relative;
-  display: inline-block;
-  width: 50px;
-  height: 21px;
+	position: relative;
+	display: inline-block;
+	width: 50px;
+	height: 21px;
 }
 
-.switch input { 
-  opacity: 0;
-  width: 0;
-  height: 0;
+.switch input {
+	opacity: 0;
+	width: 0;
+	height: 0;
 }
 
 .slider {
-  position: absolute;
-  cursor: pointer;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: #ccc;
-  -webkit-transition: .4s;
-  transition: .4s;
+	position: absolute;
+	cursor: pointer;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	background-color: #ccc;
+	-webkit-transition: 0.4s;
+	transition: 0.4s;
 }
 
 .slider:before {
-  position: absolute;
-  content: "";
-  height: 14px;
-  width: 14px;
-  left: 4px;
-  bottom: 4px;
-  background-color: white;
-  -webkit-transition: .4s;
-  transition: .4s;
+	position: absolute;
+	content: "";
+	height: 14px;
+	width: 14px;
+	left: 4px;
+	bottom: 4px;
+	background-color: white;
+	-webkit-transition: 0.4s;
+	transition: 0.4s;
 }
 
 input:checked + .slider {
-  background-color: #f02d3a;
+	background-color: #f02d3a;
 }
 
 input:focus + .slider {
-  box-shadow: 0 0 1px #f02d3a;
+	box-shadow: 0 0 1px #f02d3a;
 }
 
 input:checked + .slider:before {
-  -webkit-transform: translateX(26px);
-  -ms-transform: translateX(26px);
-  transform: translateX(26px);
+	-webkit-transform: translateX(26px);
+	-ms-transform: translateX(26px);
+	transform: translateX(26px);
 }
 
 /* Rounded sliders */
 .slider.round {
-  border-radius: 34px;
+	border-radius: 34px;
 }
 
 .slider.round:before {
-  border-radius: 50%;
+	border-radius: 50%;
 }
 
 /*Upload button*/
@@ -618,7 +633,7 @@ input:checked + .slider:before {
 	justify-content: center;
 }
 
-.submitBtn {
+.submitButton {
 	border: none;
 	font-family: "Manrope", sans-serif;
 	font-weight: 600;
@@ -870,6 +885,7 @@ h3 {
 	display: flex;
 	flex-direction: column;
 	margin-bottom: 1rem;
+	border-color: 2px solid #f02d3a;
 }
 
 textarea {
@@ -884,6 +900,9 @@ textarea {
 
 textarea::placeholder {
 	font-family: "Manrope", sans-serif;
+}
+
+textarea:focus {
 }
 
 .rating {
@@ -916,41 +935,43 @@ textarea::placeholder {
 	background-color: #cf2531;
 }
 
-.reviewList{
-   overflow-y: scroll;
+.reviewList {
+	overflow-y: scroll;
 }
 
 .reviewItem {
-  display: flex;
-  flex-direction: column;
-  border-bottom: 1px solid #ddd;
-  padding: 10px;
+	display: flex;
+	flex-direction: column;
+	border-bottom: 1px solid #ddd;
+	padding: 10px;
 }
 
 .reviewContent {
-   display: flex;
-  justify-content: space-between;
-  align-items: center;
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
 }
 
 .reviewText {
-  font-size: 16px;
-  margin-bottom: 5px;
+	font-size: 16px;
+	margin-bottom: 5px;
 }
 
 .reviewDate {
-  font-size: 12px;
-  color: gray;
+	font-size: 12px;
+	color: gray;
 }
 
-.reviewList, .repliesList {
+.reviewList,
+.repliesList {
 	list-style: none;
 	padding: 0;
 }
 
-.reviewText, .replyText {
+.reviewText,
+.replyText {
 	font-size: 15px;
-      font-weight: 500;
+	font-weight: 500;
 }
 
 .reviewList li {
@@ -964,7 +985,7 @@ small {
 	display: block;
 	color: #555;
 	margin-top: 0.3rem;
-  font-size: 12px;
+	font-size: 12px;
 }
 
 .userRating {
@@ -980,50 +1001,50 @@ small {
 .viewReplies {
 	font-weight: 800;
 	font-size: 12px;
-  color:#f02d3a;
-  cursor: pointer;
+	color: #f02d3a;
+	cursor: pointer;
 }
 
 .repliesList {
-  list-style: none;
-  padding-left: 20px; 
-  margin-top: 5px;
+	list-style: none;
+	padding-left: 20px;
+	margin-top: 5px;
 }
 
-.repliesList li{
-  background-color: #f9f9f9;
-  padding: 8px;
-  border-radius: 8px;
-  margin-top: 5px;
+.repliesList li {
+	background-color: #f9f9f9;
+	padding: 8px;
+	border-radius: 8px;
+	margin-top: 5px;
 }
 
 /* My Posts Styles */
 .title {
-  width: Hug (324px) px;
-  height: Hug (68px) px;
-  top: 105px;
-  left: 303px;
-  padding: 10px 0px 0px 0px;
-  font-size: 30px;
-  text-align: center;
-  margin-bottom: 10px;
-  margin-top: 90px;
-  font-weight: 600;
-  color: rgb(15, 60, 76);
+	width: Hug (324px) px;
+	height: Hug (68px) px;
+	top: 105px;
+	left: 303px;
+	padding: 10px 0px 0px 0px;
+	font-size: 30px;
+	text-align: center;
+	margin-bottom: 10px;
+	margin-top: 90px;
+	font-weight: 600;
+	color: rgb(15, 60, 76);
 }
 
 .bi.bi-chat-right {
-  color: rgb(15, 60, 76);
-  position: absolute;
-  left: 660px;
-  top: 865px;
-  font-size: 20px;
-  cursor: pointer;
+	color: rgb(15, 60, 76);
+	position: absolute;
+	left: 660px;
+	top: 865px;
+	font-size: 20px;
+	cursor: pointer;
 }
 
 .message {
-  display: flex;
-  justify-content: center;
+	display: flex;
+	justify-content: center;
 }
 
 /* .noPosts {
@@ -1035,8 +1056,18 @@ small {
 } */
 
 .bi.bi-images {
-  position: absolute;
-  top: 330px;
-  font-size: 70px;
-  color: rgb(185, 185, 185);
+	position: absolute;
+	top: 330px;
+	font-size: 70px;
+	color: rgb(185, 185, 185);
+}
+
+.bi.bi-trash3 {
+	color: red;
+	font-size: 20px;
+}
+
+.bi.bi-pencil-fill {
+	color: #072635;
+	font-size: 20px;
 }

@@ -1,18 +1,20 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import Head from "next/head";
+import Image from "next/image";
+import { useRouter } from "next/router";
+import { formatDistanceToNow } from "date-fns";
 import axios from "axios";
 import Navigation from "../components/navigation";
-// import { IoIosArrowBack, IoIosArrowForward as IoForward } from "react-icons/io";
-// import { MdOutlineChatBubbleOutline } from "react-icons/md";
-// import { IoMdImages } from "react-icons/io";
 
-const MyLibrary = () => {
-	const [images, setImages] = useState([]); // State to store fetched images
+const MyPosts = () => {
+	const [video, setVideo] = useState([]); // State to store fetched videos
 	const [userInfo, setUserInfo] = useState(null);
 	const [userID, setUserID] = useState("");
-	const [currentPage, setCurrentPage] = useState(1); // State to track the current page
-	const imagesPerPage = 4; // Number of images to display per page
-	// const navigate = useNavigate();
+	const [currentPage, setCurrentPage] = useState(1); // Number of video to display per page
+    const videosPerPage = 100;
+    const [loading, setLoading] = useState(false); // Track loading state
+    const router = useRouter(); 
+    const videoContainerRef = useRef(null);
 
 	useEffect(() => {
 		const currentUser = localStorage.getItem("user");
@@ -21,66 +23,69 @@ const MyLibrary = () => {
 			setUserInfo(user);
 			setUserID(user.appUserId); // Set the username in the input field
 
-			// Fetch images by userId
-			const fetchImages = async (userId) => {
+			// Fetch videos by userId
+			const fetchVideos = async (userId) => {
 				try {
 					const response = await axios.get(
-						`http://localhost:5110/api/images/user/${userId}`
+						`http://localhost:5110/api/video/user/${userId}`
 					);
-					setImages(response.data); // Store the fetched images in state
+					setVideo(response.data); // Store the fetched videos in state
 				} catch (error) {
-					console.error("An error occurred while fetching images", error);
+					console.error("An error occurred while fetching videos", error);
 				}
 			};
 
-			fetchImages(user.appUserId); // Pass userId to fetchImages
+			fetchVideos(user.appUserId); // Pass userId to fetch videos
 		}
 	}, []);
 
-	//Function to view image
-	const imageClick = (image) => {
-		if (image.imageID) {
-			navigate(`/image/${image.imageID}`, {
-				state: { image, fromMyLibrary: true },
-			});
+	//Function to handel thumbnail click and navigate to video detail
+	const thumbnailClick = (video) => {
+		if (video.videoId) {
+			router.push(`/video/${video.videoId}`);
 		}
 	};
 
-	// Calculate the indexes for the images to display on the current page
-	const indexOfLastImage = currentPage * imagesPerPage;
-	const indexOfFirstImage = indexOfLastImage - imagesPerPage;
-	const currentImages = images.slice(indexOfFirstImage, indexOfLastImage); // Slice the images array to get images for the current page
-
-	const totalPages = Math.ceil(currentImages.length / imagesPerPage);
-
-	const getVisiblePages = (currentPage) => {
-		const startPage = Math.max(1, currentPage - 1); // Display 3 pages at a time
-		const endPage = Math.min(startPage + 2, totalPages);
-		const pages = [];
-		for (let i = startPage; i <= endPage; i++) {
-			pages.push(i);
-		}
-		return pages;
-	};
-
-	const visiblePages = getVisiblePages(currentPage);
-
-	// Function to handle page change
-	const paginate = (pageNumber) => setCurrentPage(pageNumber);
-
-	// Function to go to the next page
-	const nextPage = () => {
-		if (currentPage < pageNumbers.length) {
-			setCurrentPage(currentPage + 1);
-		}
-	};
-
-	// Function to go to the previous page
-	const prevPage = () => {
-		if (currentPage > 1) {
-			setCurrentPage(currentPage - 1);
-		}
-	};
+  // Calculate the indexes for the video to display on the current page
+    const indexOfLastVideo = currentPage * videosPerPage;
+    const indexOfFirstVideo = indexOfLastVideo - videosPerPage;
+    const currentVideos = video.slice(indexOfFirstVideo, indexOfLastVideo);
+  
+    // Fetch more videos as the user scrolls
+    const fetchMoreVideos = () => {
+      if (loading) return; // Prevent multiple fetches at once
+  
+      setLoading(true);
+      setTimeout(() => {
+        setVideos((prevVideos) => [...prevVideos]);
+        setLoading(false);
+        setCurrentPage((prevPage) => prevPage + 1);
+      }, 500); // Simulate network delay
+    };
+  
+    // Scroll event listener to trigger fetchMoreVideos when user reaches the bottom
+    const handleScroll = () => {
+      const container = videoContainerRef.current;
+      if (
+        container &&
+        container.scrollHeight - container.scrollTop === container.clientHeight
+      ) {
+        fetchMoreVideos();
+      }
+    };
+  
+    useEffect(() => {
+      const container = videoContainerRef.current;
+      if (container) {
+        container.addEventListener("scroll", handleScroll);
+      }
+  
+      return () => {
+        if (container) {
+          container.removeEventListener("scroll", handleScroll);
+        }
+      };
+    }, [loading]);
 
 	return (
 		<React.Fragment>
@@ -89,63 +94,51 @@ const MyLibrary = () => {
 			</Head>
 			<div className="container">
 				<Navigation />
-				<div className="mainPage">
-					<div className="title">My Library</div>
+				<div className="title">My Library</div>
 
-					{/* return this if the user has not posted any images yet */}
-					{images.length === 0 ? (
-						<div className="message">
-							<div className="noVideo">User has not posted images yet</div>
-							<i className="bi bi-images"></i>
-						</div>
-					) : (
-						<div className="imageContainer">
-							{currentImages.map((image) => (
-								<div className="imageCard" key={image.id}>
-									<img
-										src={image.imageURL}
-										className="image"
-										onClick={() => imageClick(image)}
+				<div className="videoContainer">
+					{/* return this if the user has not posted any videos yet */}
+					{currentVideos.length > 0 ? (
+						currentVideos.map((video) => (
+							<div className="videoGrid" key={video.id}>
+								<div className="videoCard">
+									<Image
+										src={video.thumbnailURL}
+										className="videoThumbnail"
+										onClick={() => thumbnailClick(video)}
+										alt={video.title}
+										width={300}
+										height={200}
 									/>
-									<div className="overlay">
-										<h2>{image.title}</h2>
+									<div className="videoContent">
+										<div className="videoTitle">
+											<p>{video.title}</p>
+											<i className="bi bi-chat-left comment"></i>
+										</div>
+										<div className="rating">
+											<span className="ratingCount">3</span>
+											{video.rating} <i className="bi bi-star-fill"></i>
+										</div>
+										<div className="videoDetails">
+											<span className="creatorName">
+												{video.creatorUserName}
+											</span>
+											<span className="videoDate">
+												{formatDistanceToNow(new Date(video.createdAt))} ago
+											</span>
+										</div>
 									</div>
-									<i className="bi bi-chat-right"></i>
 								</div>
-							))}
-						</div>
+							</div>
+						))
+					) : (
+						<div className="noVideo">No videos have been uploaded yet.</div>
 					)}
-					<div className="pagination">
-						<button
-							onClick={prevPage}
-							disabled={currentPage === 1}
-							className="pageArrow"
-						>
-							<i className="bi bi-arrow-left-short"></i>
-						</button>
-						{visiblePages.map((number) => (
-							<button
-								key={number}
-								onClick={() => paginate(number)}
-								className={`$ pageNumber ${
-									currentPage === number ? "activePage" : ""
-								}`}
-							>
-								{number}
-							</button>
-						))}
-						<button
-							onClick={nextPage}
-							disabled={currentPage === totalPages}
-							className="pageArrow"
-						>
-							<i className="bi bi-arrow-right-short"></i>
-						</button>
-					</div>
+					{loading && <p>Loading more...</p>}
 				</div>
 			</div>
 		</React.Fragment>
 	);
 };
 
-export default MyLibrary;
+export default MyPosts;

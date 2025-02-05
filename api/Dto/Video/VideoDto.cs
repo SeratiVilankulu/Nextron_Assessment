@@ -9,6 +9,7 @@ namespace api.Dto.Video
   public class VideoDto
   {
     public int VideoId { get; set; }
+    public string? CreatorUserId { get; set; }
     public string Title { get; set; } = string.Empty;
     public string Description { get; set; } = string.Empty;
     public string ThumbnailURL { get; set; } = string.Empty;

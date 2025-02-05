@@ -52,20 +52,25 @@ namespace api.Repository
 
     public async Task<List<Video>> GetAllAsync()
     {
-      return await _context.Videos.Include(r => r.Reviews).ToListAsync();
+      return await _context.Videos
+      .Include(v => v.AppUser)
+      .Include(r => r.Reviews)
+      .ToListAsync();
     }
-
-   
 
     public async Task<Video?> GetByIdAsync(int id)
     {
-      return await _context.Videos.Include(r => r.Reviews).FirstOrDefaultAsync(i => i.VideoId == id);
+      return await _context.Videos.Include(r => r.Reviews)
+        .Include(v => v.AppUser)
+        .Include(c => c.Reviews)
+        .FirstOrDefaultAsync(i => i.VideoId == id);
     }
 
     public async Task<List<Video>> GetByUserIdAsync(string userId)
     {
       return await _context.Videos
         .Where(i => i.AppUserId == userId)
+        .Include(v => v.AppUser)
         .Include(c => c.Reviews)
         .ToListAsync();
     }

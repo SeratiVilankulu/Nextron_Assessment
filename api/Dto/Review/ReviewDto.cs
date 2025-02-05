@@ -10,6 +10,7 @@ namespace api.Dto.Review
     public int ReviewId { get; set; }
     public int Rating { get; set; }
     public string ReviewText { get; set; } = string.Empty;
+    public string CreatorUserName { get; set; } = string.Empty;
     public DateOnly? CreatedAt { get; set; }
     public int? VideoId { get; set; }
   }

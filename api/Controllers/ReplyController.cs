@@ -25,6 +25,7 @@ namespace api.Controllers
       _reviewRepo = reviewRepo;
     }
 
+    // Get endpoint to fetch all replies
     [HttpGet]
     public async Task<IActionResult> GetAll()
     {
@@ -33,11 +34,17 @@ namespace api.Controllers
 
       var replies = await _replyRepo.GetAllAsync();
 
-      var repliesDto = replies.Select(r => r.ToReplyDto());
+      var repliesDto = replies.Select(r => new ReplyDto
+      {
+        ReplyText = r.ReplyText,
+        CreatedAt = r.CreatedAt,
+        CreatorUserName = r.AppUser != null ? r.AppUser.UserName : "Unknown"
+      }).ToList();
 
-      return Ok(replies);
+      return Ok(repliesDto);
     }
 
+    // Get endpoint to fetch a reply by its Id
     [HttpGet("{replyId:int}")]
     public async Task<IActionResult> GetById([FromRoute] int replyId)
     {
@@ -54,10 +61,11 @@ namespace api.Controllers
       return Ok(reply.ToReplyDto());
     }
 
-    //Get a review by review Id
+    //Get endpoint to fetch a reply by review Id
     [HttpGet("review/{reviewId:int}")]
-    public async Task<ActionResult<Reply>> GetByReviewId(int reviewId)
+    public async Task<ActionResult<List<ReplyDto>>> GetByReviewId(int reviewId)
     {
+      // Retrieve replies along with the related AppUser
       var replies = await _replyRepo.GetByReviewIdAsync(reviewId);
 
       if (replies == null || replies.Count == 0)
@@ -65,9 +73,20 @@ namespace api.Controllers
         return NotFound($"No replies found for ReviewId {reviewId}");
       }
 
-      return Ok(replies);
+      // Map replies to ReplyDto, including the user name
+      var repliesDto = replies.Select(r => new ReplyDto
+      {
+        ReplyId = r.ReplyId,
+        ReplyText = r.ReplyText,
+        CreatedAt = r.CreatedAt,
+        CreatorUserName = r.AppUser != null ? r.AppUser.UserName : "Unknown" // Add creator username
+      }).ToList();
+
+      return Ok(repliesDto);
     }
 
+
+    //Post endpoint to post a reply under a review
     [HttpPost("{reviewId:int}")]
     public async Task<IActionResult> Create([FromRoute] int reviewId, [FromBody] CreateReplyDto replyDto)
     {
@@ -91,6 +110,7 @@ namespace api.Controllers
       return CreatedAtAction(nameof(GetById), new { replyId = replyModel.ReplyId }, replyModel.ToReplyDto());
     }
 
+    //Update endpoint to update a reply details
     [HttpPatch]
     [Route("{replyId:int}")]
     public async Task<IActionResult> Update([FromRoute] int replyId, [FromBody] UpdateReplyRequestDto updateDto)
@@ -118,6 +138,7 @@ namespace api.Controllers
       return Ok(reply.ToReplyDto());
     }
 
+    //Delete endpoint to delete a reply
     [HttpDelete]
     [Route("{replyId:int}")]
     public async Task<IActionResult> Delete([FromRoute] int replyId)

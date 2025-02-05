@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using api.Data;
 using api.Dto.Review;
@@ -35,9 +36,15 @@ namespace api.Controllers
 
       var reviews = await _reviewRepo.GetAllAsync();
 
-      var reviewsDto = reviews.Select(r => r.ToReviewDto());
+      var reviewsDto = reviews.Select(r => new ReviewDto
+      {
+        Rating = r.Rating,
+        ReviewText = r.ReviewText,
+        CreatedAt = r.CreatedAt,
+        CreatorUserName = r.AppUser != null ? r.AppUser.UserName : "Unknown"
+      }).ToList();
 
-      return Ok(reviews);
+      return Ok(reviewsDto);
     }
 
     // Get endpoint to fetch a review by its Id
@@ -59,7 +66,7 @@ namespace api.Controllers
 
     // Get endpoint to fetch a review by video Id
     [HttpGet("video/{videoId}")]
-    public async Task<ActionResult<Review>> GetByVideoId(int videoId)
+    public async Task<ActionResult<List<ReviewDto>>> GetByVideoId(int videoId)
     {
       var reviews = await _reviewRepo.GetByVideoIdAsync(videoId);
 
@@ -68,8 +75,19 @@ namespace api.Controllers
         return NotFound($"No reviews found for VideoId {videoId}");
       }
 
-      return Ok(reviews);
+      // Map reviews to ReviewDto and include CreatorUserName
+      var reviewsDto = reviews.Select(r => new ReviewDto
+      {
+        ReviewId = r.ReviewId,
+        ReviewText = r.ReviewText,
+        Rating = r.Rating,
+        CreatedAt = r.CreatedAt,
+        CreatorUserName = r.AppUser != null ? r.AppUser.UserName : "Unknown" // Add the user's username
+      }).ToList();
+
+      return Ok(reviewsDto);
     }
+
 
 
     //Post endpoint to post a review
@@ -84,10 +102,14 @@ namespace api.Controllers
         return BadRequest(" Video does not exist.");
       }
 
+      // Get the logged-in user's ID (assuming you use JWT authentication)
+      var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
       var reviewModel = reviewDto.ToReviewFromCreate(videoId);
       reviewModel.CreatedAt = DateOnly.FromDateTime(DateTime.Now);
 
       await _reviewRepo.CreateAsync(reviewModel);
+      reviewModel.AppUserId = userId;
 
       return CreatedAtAction(nameof(GetById), new { reviewId = reviewModel.ReviewId }, reviewModel.ToReviewDto());
     }

@@ -128,12 +128,12 @@ const Reviews = ({ videoId }) => {
 							<div className="reviewContent">
 								<p className="reviewText">{review.reviewText}</p>
 								<small className="reviewDate">
-									By {user.userName}
+									By {review.creatorUserName}{" "}
 									{formatDistanceToNow(new Date(review.createdAt))} ago
 								</small>
 							</div>
 
-							{/* Toggle replies section */}
+							{/* Replies section */}
 							<p
 								className="viewReplies"
 								onClick={() => handleToggleReplies(review.reviewId)}
@@ -149,7 +149,7 @@ const Reviews = ({ videoId }) => {
 										<li key={reply.replyId}>
 											<p className="replyText">{reply.replyText}</p>
 											<small>
-												By {user.userName} at{" "}
+												By {reply.creatorUserName},{" "}
 												{formatDistanceToNow(new Date(reply.createdAt))} ago
 											</small>
 										</li>
