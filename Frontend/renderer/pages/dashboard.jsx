@@ -1,19 +1,43 @@
 import React, { useState, useEffect, useRef } from "react";
 import Head from "next/head";
-import Link from "next/link";
 import Image from "next/image";
 import { useRouter } from "next/router";
 import axios from "axios";
 import Navigation from "../components/navigation";
 import { formatDistanceToNow } from "date-fns";
+import { getLoggedInUser } from "../../main/authorization";
 
-export default function HomePage() {
+const Dashboard = () => {
 	const [video, setVideos] = useState([]); // State to store fetched videos
 	const [currentPage, setCurrentPage] = useState(1); // Number of images to display per page
 	const videosPerPage = 100;
 	const [loading, setLoading] = useState(false); // Track loading state
 	const router = useRouter();
 	const videoContainerRef = useRef(null);
+	const [user, setUser] = useState(null); // State to store logged in user
+
+	useEffect(() => {
+		const loggedInUser = getLoggedInUser();
+		if (loggedInUser) {
+			setUser(loggedInUser);
+		} else {
+			window.location.href = "/login"; // Redirect to login if no user
+		}
+	}, []);
+
+    // Fetch the Users from the backend
+    useEffect(() => {
+      const fetchUsers = async () => {
+        try {
+          const response = await axios.get("http://localhost:5110/api/users");
+          setUser(response.data);
+        } catch (error) {
+          console.error("An error occurred while fetching users", error);
+        }
+      };
+  
+      fetchUsers();
+    }, []);
 
 	// Fetch the uploaded thumbnails from the backend
 	useEffect(() => {
@@ -113,7 +137,7 @@ export default function HomePage() {
 											{video.rating} <i className="bi bi-star-fill"></i>
 										</div>
 										<div className="videoDetails">
-											<span className="creatorName">Name</span>
+											<span className="creatorName">{video.appUserId}</span>
 											<span className="videoDate">
 												{formatDistanceToNow(new Date(video.createdAt))} ago
 											</span>
@@ -131,3 +155,5 @@ export default function HomePage() {
 		</React.Fragment>
 	);
 }
+
+export default Dashboard;

@@ -14,6 +14,7 @@ namespace api.Dto.Video
     public string ThumbnailURL { get; set; } = string.Empty;
     public string VideoURL { get; set; } = string.Empty;
     public bool IsPublic { get; set; } = false;
+    public string CreatorUserName { get; set; } = string.Empty;
     public DateOnly CreatedAt { get; set; }
     public List<ReviewDto> Reviews { get; set; }
   }

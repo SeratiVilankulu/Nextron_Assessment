@@ -26,7 +26,7 @@ namespace api.Controllers
       _videoRepo = videoRepo;
     }
 
-    //Get all reviews
+    // Get endpoint fetch all reviews
     [HttpGet]
     public async Task<IActionResult> GetAll()
     {
@@ -40,7 +40,7 @@ namespace api.Controllers
       return Ok(reviews);
     }
 
-    //Get a review by its Id
+    // Get endpoint to fetch a review by its Id
     [HttpGet("{reviewId:int}")]
     public async Task<IActionResult> GetById([FromRoute] int reviewId)
     {
@@ -57,7 +57,7 @@ namespace api.Controllers
       return Ok(review.ToReviewDto());
     }
 
-    //Get a review by video Id
+    // Get endpoint to fetch a review by video Id
     [HttpGet("video/{videoId}")]
     public async Task<ActionResult<Review>> GetByVideoId(int videoId)
     {
@@ -72,7 +72,7 @@ namespace api.Controllers
     }
 
 
-    //Posting A review
+    //Post endpoint to post a review
     [HttpPost("{videoId:int}")]
     public async Task<IActionResult> Create([FromRoute] int videoId, [FromBody] CreateReviewDto reviewDto)
     {
@@ -92,7 +92,7 @@ namespace api.Controllers
       return CreatedAtAction(nameof(GetById), new { reviewId = reviewModel.ReviewId }, reviewModel.ToReviewDto());
     }
 
-    //Update a review
+    //Update endpoint to update a review
     [HttpPatch]
     [Route("{reviewId:int}")]
     public async Task<IActionResult> Update([FromRoute] int reviewId, [FromBody] UpdateReviewRequestDto updateDto)
@@ -110,7 +110,7 @@ namespace api.Controllers
       return Ok(review.ToReviewDto());
     }
 
-    //Delete a review
+    //Delete endpoint to delete a review
     [HttpDelete]
     [Route("{reviewId:int}")]
     public async Task<IActionResult> Delete([FromRoute] int reviewId)

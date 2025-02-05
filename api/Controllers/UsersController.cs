@@ -30,7 +30,7 @@ namespace api.Controllers
     }
 
     // Post endpoint for user registration
-    [HttpPost("register")] 
+    [HttpPost("register")]
     public async Task<IActionResult> Register([FromBody] RegisterDto registerDto)
     {
       try
@@ -86,12 +86,12 @@ namespace api.Controllers
     public async Task<IActionResult> Login(LoginDto loginDto)
     {
       if (!ModelState.IsValid)
-        return BadRequest(ModelState); 
+        return BadRequest(ModelState);
 
       var user = await _userManager.Users.FirstOrDefaultAsync(x => x.Email == loginDto.Email.ToLower());
 
       if (user == null)
-        return Unauthorized("Invalid login credentials!"); 
+        return Unauthorized("Invalid login credentials!");
 
       // Check if the password is correct, enabling account lockout for failed attempts
       var result = await _signinManager.CheckPasswordSignInAsync(user, loginDto.Password, lockoutOnFailure: true);
@@ -124,5 +124,32 @@ namespace api.Controllers
       return Unauthorized(new { message = "Invalid login credentials!" });
     }
 
+    // Get endpoint to fetch all Users
+    [HttpGet("users")]
+    public async Task<ActionResult> GetAllUsers()
+    {
+      if (!ModelState.IsValid)
+        return BadRequest(ModelState);
+
+      try
+      {
+        var users = await _context.Users
+          .Include(u => u.Videos)
+          .Include(u => u.Reviews)
+          .Include(u => u.Replies)
+          .ToListAsync();
+
+        if (users == null || users.Count == 0)
+        {
+          return NotFound("No users found.");
+        }
+
+        return Ok(users);
+      }
+      catch (Exception ex)
+      {
+        return StatusCode(500, $"Internal server error: {ex.Message}");
+      }
+    }
   }
 }

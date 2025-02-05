@@ -28,7 +28,6 @@ namespace api.Repository
         ThumbnailURL = videoModel.ThumbnailURL,
         VideoURL = videoModel.VideoURL,
         CategoryId = categoryId,
-        // AppUserId = userId
       };
       _context.Videos.Add(video);
       await _context.SaveChangesAsync();
@@ -55,6 +54,8 @@ namespace api.Repository
     {
       return await _context.Videos.Include(r => r.Reviews).ToListAsync();
     }
+
+   
 
     public async Task<Video?> GetByIdAsync(int id)
     {

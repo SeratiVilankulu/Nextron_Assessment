@@ -20,7 +20,8 @@ namespace api.Mappers
         VideoURL = videoModel.VideoURL,
         IsPublic = videoModel.IsPublic,
         CreatedAt = videoModel.CreatedAt,
-        Reviews = videoModel.Reviews.Select(r => r.ToReviewDto()).ToList()
+        Reviews = videoModel.Reviews.Select(r => r.ToReviewDto()).ToList(),
+        // CreatorUserName = videoModel.AppUser != null ? videoModel.AppUser.UserName : "Unknown"
       };
     }
 

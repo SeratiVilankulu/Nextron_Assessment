@@ -3,7 +3,7 @@ import Head from "next/head";
 import { useRouter } from "next/router";
 import axios from "axios";
 import Navigation from "../../components/navigation";
-import Modal from "../../components/modal";
+// import Modal from "../../components/modal";
 import Reviews from "../../components/reviews";
 import { formatDistanceToNow } from "date-fns";
 
@@ -18,6 +18,7 @@ const VideoDetails = () => {
 		fromMyLibrary = "false",
 	} = router.query;
 
+	const [user, setUser] = useState(null); // State to store logged in user
 	const [editIcon, setShowEditIcon] = useState(false);
 	const [actions, setShowActions] = useState(false);
 	const [deleteIcon, setShowDeleteIcon] = useState(false);
@@ -38,6 +39,20 @@ const VideoDetails = () => {
 	// 		setShowActions(fromMyLibrary === "true"); //Show comment actions icon in MyLibrary
 	// 	}
 	// }, [fromMyLibrary]);
+
+	// Fetch the Users from the backend
+	useEffect(() => {
+		const fetchUsers = async () => {
+			try {
+				const response = await axios.get("http://localhost:5110/api/users");
+				setUser(response.data);
+			} catch (error) {
+				console.error("An error occurred while fetching users", error);
+			}
+		};
+
+		fetchUsers();
+	}, []);
 
 	// Fetch video details from the backend
 	useEffect(() => {
@@ -133,8 +148,11 @@ const VideoDetails = () => {
 											)}
 											<div className="description">
 												<p>
-                          {formatDistanceToNow(new Date(updatedVideo.createdAt))} ago
-                        </p>
+													{formatDistanceToNow(
+														new Date(updatedVideo.createdAt)
+													)}{" "}
+													ago
+												</p>
 												<p>{updatedVideo.description}</p>
 											</div>
 										</div>

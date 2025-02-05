@@ -8,6 +8,7 @@ const Reviews = ({ videoId }) => {
 	const [rating, setRating] = useState(0); // State for rating input
 	const [openReplies, setOpenReplies] = useState({}); // State to manage which reviews have replies visible
 	const [replies, setReplies] = useState({}); // State to store replies for each review
+  const [user, setUser] = useState(null); // State to store logged in user
 
 	// Fetch reviews whenever the videoId changes
 	useEffect(() => {
@@ -43,6 +44,20 @@ const Reviews = ({ videoId }) => {
 			console.error("Error fetching replies:", error);
 		}
 	};
+
+	// Fetch the Users from the backend
+	useEffect(() => {
+		const fetchUsers = async () => {
+			try {
+				const response = await axios.get("http://localhost:5110/api/users");
+				setUser(response.data);
+			} catch (error) {
+				console.error("An error occurred while fetching users", error);
+			}
+		};
+
+		fetchUsers();
+	}, []);
 
 	// Toggle replies visibility and fetch them if not already fetched
 	const handleToggleReplies = (reviewId) => {
@@ -113,7 +128,7 @@ const Reviews = ({ videoId }) => {
 							<div className="reviewContent">
 								<p className="reviewText">{review.reviewText}</p>
 								<small className="reviewDate">
-									By {review.author} 
+									By {user.userName}
 									{formatDistanceToNow(new Date(review.createdAt))} ago
 								</small>
 							</div>
@@ -134,7 +149,7 @@ const Reviews = ({ videoId }) => {
 										<li key={reply.replyId}>
 											<p className="replyText">{reply.replyText}</p>
 											<small>
-												By {reply.author} at{" "}
+												By {user.userName} at{" "}
 												{formatDistanceToNow(new Date(reply.createdAt))} ago
 											</small>
 										</li>
