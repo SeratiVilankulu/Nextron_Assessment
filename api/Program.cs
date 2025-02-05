@@ -2,6 +2,7 @@ using api.Data;
 using api.Interfaces;
 using api.Models;
 using api.Repository;
+using api.Service;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -64,6 +65,7 @@ builder.Services.AddScoped<IVideoRepository, VideoRepo>();
 builder.Services.AddScoped<IReviewRepository, ReviewRepo>();
 builder.Services.AddScoped<ICategoryRepository, CategoryRepo>();
 builder.Services.AddScoped<IReplyRepository, ReplyRepo>();
+builder.Services.AddScoped<ITokenService, TokenService>();
 
 // Add CORS configuration
 builder.Services.AddCors(options =>
