@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { formatDistanceToNow } from "date-fns";
+import { getLoggedInUser } from "../../main/authorization";
 
 const Reviews = ({ videoId }) => {
 	const [reviews, setReviews] = useState([]); // State for storing reviews
@@ -8,7 +9,20 @@ const Reviews = ({ videoId }) => {
 	const [rating, setRating] = useState(0); // State for rating input
 	const [openReplies, setOpenReplies] = useState({}); // State to manage which reviews have replies visible
 	const [replies, setReplies] = useState({}); // State to store replies for each review
-  const [user, setUser] = useState(null); // State to store logged in user
+	const [user, setUser] = useState(null); // State to store logged in user
+	const [newReply, setNewReply] = useState({}); // State to store replies for each review
+	const [loadingReviews, setLoadingReviews] = useState(false); // Loading state for reviews
+	const [loadingReplies, setLoadingReplies] = useState({}); // Loading state for replies
+
+	// Fetch user data and check if logged in
+	useEffect(() => {
+		const loggedInUser = getLoggedInUser();
+		if (loggedInUser) {
+			setUser(loggedInUser);
+		} else {
+			window.location.href = "/login"; // Redirect to login if no user
+		}
+	}, []);
 
 	// Fetch reviews whenever the videoId changes
 	useEffect(() => {
@@ -19,6 +33,7 @@ const Reviews = ({ videoId }) => {
 
 	// Fetch reviews from the backend for the current video
 	const fetchReviews = async () => {
+		setLoadingReviews(true);
 		try {
 			const response = await axios.get(
 				`http://localhost:5110/api/review/video/${videoId}`
@@ -26,38 +41,28 @@ const Reviews = ({ videoId }) => {
 			setReviews(response.data);
 		} catch (error) {
 			console.error("Error fetching reviews:", error);
+		} finally {
+			setLoadingReviews(false);
 		}
 	};
 
 	// Fetch replies for a specific review from the backend
 	const fetchReplies = async (reviewId) => {
+		setLoadingReplies((prev) => ({ ...prev, [reviewId]: true }));
 		try {
 			const response = await axios.get(
 				`http://localhost:5110/api/reply/review/${reviewId}`
 			);
-			// Store replies for the specific review in state
 			setReplies((prevReplies) => ({
 				...prevReplies,
 				[reviewId]: response.data,
 			}));
 		} catch (error) {
 			console.error("Error fetching replies:", error);
+		} finally {
+			setLoadingReplies((prev) => ({ ...prev, [reviewId]: false }));
 		}
 	};
-
-	// Fetch the Users from the backend
-	useEffect(() => {
-		const fetchUsers = async () => {
-			try {
-				const response = await axios.get("http://localhost:5110/api/users");
-				setUser(response.data);
-			} catch (error) {
-				console.error("An error occurred while fetching users", error);
-			}
-		};
-
-		fetchUsers();
-	}, []);
 
 	// Toggle replies visibility and fetch them if not already fetched
 	const handleToggleReplies = (reviewId) => {
@@ -76,15 +81,37 @@ const Reviews = ({ videoId }) => {
 	const handleAddReview = async () => {
 		if (!newReview.trim()) return;
 		try {
-			await axios.post(`http://localhost:5110/api/review/${videoId}`, {
-				reviewText: newReview,
-				rating: rating,
-			});
+			await axios.post(
+				`http://localhost:5110/api/review/${videoId}`,
+				{
+					reviewText: newReview,
+					rating: rating,
+				},
+				{
+					headers: { Authorization: `Bearer ${user.verificationToken}` },
+				}
+			);
 			setNewReview(""); // Clear the input after posting
 			setRating(0); // Reset the rating
 			fetchReviews(); // Reload the reviews
 		} catch (error) {
 			console.error("Error adding review:", error);
+		}
+	};
+
+	// Handle adding a new reply
+	const handleAddReply = async (reviewId) => {
+		if (!newReply[reviewId]?.trim()) return;
+		try {
+			await axios.post(
+				`http://localhost:5110/api/reply/${reviewId}`,
+				{ replyText: newReply[reviewId] },
+				{ headers: { Authorization: `Bearer ${user.verificationToken}` } }
+			);
+			setNewReply((prev) => ({ ...prev, [reviewId]: "" })); // Clear reply input
+			fetchReplies(reviewId); // Reload replies
+		} catch (error) {
+			console.error("Error adding reply:", error);
 		}
 	};
 
@@ -117,9 +144,11 @@ const Reviews = ({ videoId }) => {
 			</div>
 
 			{/* List of reviews */}
-			<ul className="reviewList">
-				{reviews.length ? (
-					reviews.map((review) => (
+			{loadingReviews ? (
+				<p>Loading reviews...</p>
+			) : reviews.length ? (
+				<ul className="reviewList">
+					{reviews.map((review) => (
 						<li key={review.reviewId} className="reviewItem">
 							<div className="userRating">
 								<p>{review.rating}</p>
@@ -143,25 +172,49 @@ const Reviews = ({ videoId }) => {
 									: "See all replies"}
 							</p>
 							{/* Display replies if they are visible */}
-							{openReplies[review.reviewId] && replies[review.reviewId] && (
-								<ul className="repliesList">
-									{replies[review.reviewId].map((reply) => (
-										<li key={reply.replyId}>
-											<p className="replyText">{reply.replyText}</p>
-											<small>
-												By {reply.creatorUserName},{" "}
-												{formatDistanceToNow(new Date(reply.createdAt))} ago
-											</small>
-										</li>
-									))}
-								</ul>
+							{openReplies[review.reviewId] &&
+							loadingReplies[review.reviewId] ? (
+								<p>Loading replies...</p>
+							) : (
+								replies[review.reviewId] && (
+									<ul className="repliesList">
+										{replies[review.reviewId].map((reply) => (
+											<li key={reply.replyId}>
+												<p className="replyText">{reply.replyText}</p>
+												<small>
+													By {reply.creatorUserName},{" "}
+													{formatDistanceToNow(new Date(reply.createdAt))} ago
+												</small>
+											</li>
+										))}
+									</ul>
+								)
+							)}
+
+							{/* Reply section */}
+							{openReplies[review.reviewId] && (
+								<div className="replySection">
+									<textarea
+										value={newReply[review.reviewId] || ""}
+										onChange={(e) =>
+											setNewReply((prev) => ({
+												...prev,
+												[review.reviewId]: e.target.value,
+											}))
+										}
+										placeholder="Add a reply..."
+									/>
+									<button onClick={() => handleAddReply(review.reviewId)}>
+										Reply
+									</button>
+								</div>
 							)}
 						</li>
-					))
-				) : (
-					<p>No reviews yet. Be the first to add one!</p>
-				)}
-			</ul>
+					))}
+				</ul>
+			) : (
+				<p>No reviews yet. Be the first to add one!</p>
+			)}
 		</div>
 	);
 };

@@ -5,9 +5,11 @@ using System.Security.Claims;
 using System.Threading.Tasks;
 using api.Data;
 using api.Dto.Review;
+using api.Extensions;
 using api.Interfaces;
 using api.Mappers;
 using api.Models;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -20,11 +22,14 @@ namespace api.Controllers
     private readonly ApplicationDBContext _context;
     private readonly IReviewRepository _reviewRepo;
     private readonly IVideoRepository _videoRepo;
-    public ReviewController(ApplicationDBContext context, IReviewRepository reviewRepo, IVideoRepository videoRepo)
+    private readonly UserManager<AppUser> _userManager;
+    public ReviewController(ApplicationDBContext context, IReviewRepository reviewRepo, IVideoRepository videoRepo,
+    UserManager<AppUser> userManager)
     {
       _context = context;
       _reviewRepo = reviewRepo;
       _videoRepo = videoRepo;
+      _userManager = userManager;
     }
 
     // Get endpoint fetch all reviews
@@ -82,6 +87,7 @@ namespace api.Controllers
         ReviewText = r.ReviewText,
         Rating = r.Rating,
         CreatedAt = r.CreatedAt,
+        // AppUser = r.AppUserId,
         CreatorUserName = r.AppUser != null ? r.AppUser.UserName : "Unknown" // Add the user's username
       }).ToList();
 
@@ -102,14 +108,27 @@ namespace api.Controllers
         return BadRequest(" Video does not exist.");
       }
 
-      // Get the logged-in user's ID (assuming you use JWT authentication)
-      var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+      var userEmail = User.GetUserEmail(); // from the claims extension
+      
+      if (string.IsNullOrEmpty(userEmail))
+      {
+        return Unauthorized("Email is missing from the claims.");
+      }
+
+      var user = await _userManager.FindByEmailAsync(userEmail);
+      if (user == null)
+      {
+        return Unauthorized("User not found.");
+      }
+
+      var userId = user.Id;
 
       var reviewModel = reviewDto.ToReviewFromCreate(videoId);
+      reviewModel.AppUserId = userId; // Set the userId here
+      reviewModel.VideoId = videoId; // Ensure videoId is set
       reviewModel.CreatedAt = DateOnly.FromDateTime(DateTime.Now);
 
       await _reviewRepo.CreateAsync(reviewModel);
-      reviewModel.AppUserId = userId;
 
       return CreatedAtAction(nameof(GetById), new { reviewId = reviewModel.ReviewId }, reviewModel.ToReviewDto());
     }

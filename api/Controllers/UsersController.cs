@@ -94,7 +94,7 @@ namespace api.Controllers
         return Unauthorized("Invalid login credentials!");
 
       // Check if the password is correct, enabling account lockout for failed attempts
-      var result = await _signinManager.CheckPasswordSignInAsync(user, loginDto.Password, lockoutOnFailure: true);
+      var result = await _signinManager.CheckPasswordSignInAsync(user, loginDto.Password, lockoutOnFailure: false);
 
       if (result.Succeeded)
       {

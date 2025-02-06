@@ -121,7 +121,7 @@ const MyPosts = () => {
 										</div>
 										<div className="videoDetails">
 											<span className="creatorName">
-												{video.creatorUserName}
+												creator
 											</span>
 											<span className="videoDate">
 												{formatDistanceToNow(new Date(video.createdAt))} ago

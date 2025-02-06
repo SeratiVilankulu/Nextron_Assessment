@@ -4,9 +4,11 @@ using System.Linq;
 using System.Threading.Tasks;
 using api.Data;
 using api.Dto.Reply;
+using api.Extensions;
 using api.Interfaces;
 using api.Mappers;
 using api.Models;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
 namespace api.Controllers
@@ -18,11 +20,14 @@ namespace api.Controllers
     private readonly ApplicationDBContext _context;
     private readonly IReplyRepository _replyRepo;
     private readonly IReviewRepository _reviewRepo;
-    public ReplyController(ApplicationDBContext context, IReplyRepository replyRepo, IReviewRepository reviewRepo)
+    private readonly UserManager<AppUser> _userManager;
+    public ReplyController(ApplicationDBContext context, IReplyRepository replyRepo, IReviewRepository reviewRepo,
+    UserManager<AppUser> userManager)
     {
       _context = context;
       _replyRepo = replyRepo;
       _reviewRepo = reviewRepo;
+      _userManager = userManager;
     }
 
     // Get endpoint to fetch all replies
@@ -100,12 +105,27 @@ namespace api.Controllers
         return BadRequest(" Reply does not exist.");
       }
 
+      var userEmail = User.GetUserEmail(); // from the claims extension
+
+      if (string.IsNullOrEmpty(userEmail))
+      {
+        return Unauthorized("Email is missing from the claims.");
+      }
+
+      var user = await _userManager.FindByEmailAsync(userEmail);
+      if (user == null)
+      {
+        return Unauthorized("User not found.");
+      }
+
+      var userId = user.Id;
+
       var replyModel = replyDto.ToReplyFromCreate(reviewId);
+      replyModel.AppUserId = userId; // Ensure userId is set
+      replyModel.ReviewId = reviewId; // ensure reviewId is set
       replyModel.CreatedAt = DateOnly.FromDateTime(DateTime.Now);
 
       await _replyRepo.CreateAsync(replyModel);
-
-      Console.WriteLine($"Created reply with ID: {replyModel.ReplyId}");
 
       return CreatedAtAction(nameof(GetById), new { replyId = replyModel.ReplyId }, replyModel.ToReplyDto());
     }

@@ -17,5 +17,6 @@ namespace api.Models
     public AppUser? AppUser { get; set; }
 
     public int? ReviewId { get; set; }
+    public Review? Reviews { get; set; }
   }
 }

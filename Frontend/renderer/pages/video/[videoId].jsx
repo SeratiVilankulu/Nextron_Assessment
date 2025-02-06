@@ -134,11 +134,7 @@ const VideoDetails = () => {
 													)}
 												</div>
 												<div className="userProfile">
-													{user && user.profileImage ? (
-														<img src={user.profileImage} alt="User Profile" />
-													) : (
-														<div>No Profile Image</div> 
-													)}
+													<p>By:</p>
 													<h3>{updatedVideo.creatorUserName}</h3>
 												</div>
 											</div>

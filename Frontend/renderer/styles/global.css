@@ -16,7 +16,6 @@ body {
 	padding: 0px;
 	line-height: 1.6;
 	background: #f2f2f2;
-	/* background: black; */
 }
 
 h1,
@@ -831,25 +830,6 @@ video {
 	margin: 0px 10px;
 }
 
-/* .commentCount {
-	color: rgb(15, 60, 76);
-	font-size: 15px;
-	font-weight: 600;
-}
-
-.saveButton {
-	background-color: #4caf50;
-	color: white;
-	padding: 10px 20px;
-	border: none;
-	border-radius: 5px;
-	cursor: pointer;
-} */
-
-/* .saveButton:disabled {
-	background-color: #ccc;
-	cursor: not-allowed;
-} */
 
 .errorMessage {
 	color: #af2020;
@@ -900,9 +880,6 @@ textarea {
 
 textarea::placeholder {
 	font-family: "Manrope", sans-serif;
-}
-
-textarea:focus {
 }
 
 .rating {
@@ -1016,6 +993,31 @@ small {
 	padding: 8px;
 	border-radius: 8px;
 	margin-top: 5px;
+}
+
+.replySection textarea {
+	font-family: "Manrope", sans-serif;
+	width: 100%;
+	height: 60px;
+	padding: 8px;
+	font-size: 14px;
+	border-radius: 4px;
+	border: 1px solid #ccc;
+}
+
+.replySection button {
+	font-family: "Manrope", sans-serif;
+	margin-top: 5px;
+	background-color: #f02d3a;
+	color: white;
+	border: none;
+	padding: 8px 15px;
+	border-radius: 4px;
+	cursor: pointer;
+}
+
+.replySection button:hover {
+	background-color: #c3242f;
 }
 
 /* My Posts Styles */
