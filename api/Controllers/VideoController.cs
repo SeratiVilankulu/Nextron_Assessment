@@ -128,10 +128,19 @@ namespace api.Controllers
           engine.GetMetadata(inputFile);
         }
 
+        var userEmail = User.GetUserEmail();
+        var user = await _userManager.FindByEmailAsync(userEmail);
+
+        if (user == null) return Unauthorized("user not found");
+
+        var userId = user.Id;
+
         // Add duration to your model
         var videoModel = videoDto.ToVideoFromCreateDto();
-        videoModel.CreatedAt = DateOnly.FromDateTime(DateTime.Now);
+        videoModel.CreatedAt = DateOnly.FromDateTime(DateTime.UtcNow); 
         videoModel.videoDuration = inputFile.Metadata.Duration;
+
+        videoModel.AppUserId = userId; // Set the userId here
 
         // Pass both videosDto and categoryID to CreateAsync
         videoModel = await _videoRepo.CreateAsync(videoModel, categoryId);

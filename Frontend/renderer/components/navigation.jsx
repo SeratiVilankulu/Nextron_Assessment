@@ -5,7 +5,7 @@ import { getLoggedInUser } from "../../main/authorization";
 
 const Navigation = () => {
 	const [user, setUser] = useState(null); // State to store logged in user
-  const router = useRouter();
+	const router = useRouter();
 
 	useEffect(() => {
 		const loggedInUser = getLoggedInUser();
@@ -17,9 +17,10 @@ const Navigation = () => {
 		}
 	}, []);
 
-	//Function to handel logout
+	// Function to handle logout
 	const Logout = () => {
-			router.push(`/home`);
+		localStorage.clear(); // Clear all local storage
+		router.push(`/home`);
 	};
 
 	return (
@@ -52,10 +53,7 @@ const Navigation = () => {
 				</div>
 				<hr />
 				<div>
-					<button
-						className="logOutButton"
-						onClick={() => Logout()}
-					>
+					<button className="logOutButton" onClick={Logout}>
 						Logout
 					</button>
 				</div>

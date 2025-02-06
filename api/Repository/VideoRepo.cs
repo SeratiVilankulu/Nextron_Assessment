@@ -86,8 +86,6 @@ namespace api.Repository
 
       existingVideo.Title = updateDto.Title;
       existingVideo.Description = updateDto.Description;
-      existingVideo.VideoURL = updateDto.VideoURL;
-      existingVideo.ThumbnailURL = updateDto.ThumbnailURL;
       existingVideo.CreatedAt = DateOnly.FromDateTime(DateTime.Now);
 
       await _context.SaveChangesAsync();

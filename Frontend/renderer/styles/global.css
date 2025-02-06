@@ -88,7 +88,8 @@ h6 {
 	font-family: "Manrope", sans-serif;
 }
 
-.loginButton {
+.loginButton,
+.saveButton {
 	font-family: "Manrope", sans-serif;
 	font-weight: 700;
 	background-color: #f02d3a;
@@ -100,7 +101,8 @@ h6 {
 	text-align: center;
 }
 
-.loginButton:hover {
+.loginButton:hover,
+.saveButton:hover {
 	background-color: #c3242f;
 }
 
@@ -283,7 +285,6 @@ h6 {
 	justify-content: space-between;
 	align-items: center;
 	font-size: 1.2rem;
-	font-weight: bold;
 	margin: 5px 10px 0px 0px;
 }
 
@@ -648,7 +649,7 @@ input:checked + .slider:before {
 	transition: all 0.3s ease;
 }
 
-.submitBtn:hover {
+.submitButton:hover {
 	background-color: #f02d3a;
 }
 
@@ -658,7 +659,6 @@ input:checked + .slider:before {
 	color: #af2020;
 	margin-top: 0px;
 	margin-bottom: 5px;
-	width: 220px;
 }
 
 .successMessage {
@@ -784,6 +784,12 @@ video {
 	align-items: center;
 }
 
+.iconsContainer {
+	display: flex;
+	gap: 10px;
+	align-items: center;
+}
+
 .userProfile h3 {
 	margin: 0;
 	font-size: 16px;
@@ -806,7 +812,6 @@ video {
 	margin-left: 10px;
 	flex-shrink: 0;
 	position: relative;
-	top: 8px;
 }
 
 /* Individual icon styling */
@@ -815,7 +820,6 @@ video {
 	font-size: 24px;
 	color: #af2020;
 	cursor: pointer;
-	margin: 10px 10px;
 }
 
 .actionsContainer {
@@ -829,7 +833,6 @@ video {
 	cursor: pointer;
 	margin: 0px 10px;
 }
-
 
 .errorMessage {
 	color: #af2020;
@@ -870,6 +873,7 @@ h3 {
 
 textarea {
 	resize: none;
+	font-family: "Manrope", sans-serif;
 	background-color: #f2f2f2;
 	margin-bottom: 0.5rem;
 	border: none;
@@ -929,6 +933,28 @@ textarea::placeholder {
 	align-items: center;
 }
 
+.editIcons {
+	display: flex;
+	gap: 5px;
+}
+
+.savesButton,
+.cancel {
+	font-size: 16px;
+	border: none;
+	background-color: #f9f9f9;
+}
+
+.save {
+	color: green;
+	cursor: pointer;
+}
+
+.cancel {
+	color: red;
+	cursor: pointer;
+}
+
 .reviewText {
 	font-size: 16px;
 	margin-bottom: 5px;
@@ -952,6 +978,8 @@ textarea::placeholder {
 }
 
 .reviewList li {
+	display: flex;
+	justify-content: space-between;
 	background: #f9f9f9;
 	padding: 1rem;
 	margin: 0.5rem 0;
@@ -969,10 +997,17 @@ small {
 	display: flex;
 	gap: 5px;
 	align-items: center;
+	justify-content: space-between;
 }
 
 .userRating .bi.bi-star-fill {
 	color: #ffc107;
+}
+
+.rate {
+	display: flex;
+	gap: 5px;
+	align-items: center;
 }
 
 .viewReplies {
@@ -1066,10 +1101,100 @@ small {
 
 .bi.bi-trash3 {
 	color: red;
-	font-size: 20px;
+	font-size: 15px;
 }
 
 .bi.bi-pencil-fill {
 	color: #072635;
+	font-size: 15px;
+}
+
+/* Modal styles */
+
+.modalContainer {
+	position: fixed;
+	top: 0px;
+	left: 0px;
+	z-index: 1;
+	width: 100vw;
+	height: 100%;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	background: rgba(0, 0, 0, 0.4);
+}
+
+.modal {
+	position: relative;
+	top: 0px;
+	border-radius: 5px;
+	padding: 2rem;
+	background: white;
+	width: 30rem;
+}
+
+.modal .saveButton {
+	display: block;
+	margin: auto;
+	border: none;
+	font-family: "Manrope", sans-serif;
+	color: white;
+	border-radius: 4px;
+	box-shadow: 0px 2px 8px #aaa8a8;
+	cursor: pointer;
+}
+
+.title {
+	padding: 10px 0px 0px 0px;
+	font-size: 24px;
+	text-align: center;
+	margin-bottom: 10px;
+	margin-top: 0px;
+	font-weight: 600;
+	color: rgb(15, 60, 76);
+}
+
+.formGroup {
+	display: flex;
+	flex-direction: column;
+	margin-top: 1rem;
+	margin-bottom: 1rem;
+}
+
+.formGroup input,
+.formGroup textarea {
+	font-family: "Manrope", sans-serif;
+	height: auto;
+	padding: 10px;
+	border: 1px solid #aaa8a8;
+	background-color: #f2f2f2;
+	border-radius: 5px;
+	font-size: 14px;
+	color: #072635;
+	border-color: #072635;
+	margin-bottom: 5px;
+}
+
+.formGroup label {
+	margin-bottom: 0.2rem;
+	font-size: 12px;
+	font-weight: 600;
+	color: rgb(15, 60, 76);
+}
+
+.closeModalButton {
+	position: absolute;
+	top: 10px;
+	right: 5px;
+	background: none;
+	border: none;
 	font-size: 20px;
+	cursor: pointer;
+}
+
+.errorMessage {
+	font-size: 12px;
+	font-weight: 500;
+	color: red;
+	margin-top: 6px;
 }

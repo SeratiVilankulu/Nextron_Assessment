@@ -1,13 +1,14 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 
-const Modal = ({ closeModal, videoId, defaultValue }) => {
+const Modal = ({ closeModal, id, defaultValue }) => {
 	const [formError, setFormError] = useState({});
 	const [submitting, setSubmitting] = useState(false);
 	const [video, setVideo] = useState({
 		title: "",
 		description: "",
 	});
+	const [updateSuccessMessage, setUpdateSuccessMessage] = useState(""); // Success message state
 
 	useEffect(() => {
 		if (defaultValue) {
@@ -32,8 +33,8 @@ const Modal = ({ closeModal, videoId, defaultValue }) => {
 		}
 		if (!video.description) {
 			inputError.description = "Cannot submit without description";
-		} else if (video.description.length > 50) {
-			inputError.description = "Description cannot be more than 50 characters";
+		} else if (video.description.length > 250) {
+			inputError.description = "Description cannot be more than 250 characters";
 		}
 
 		if (Object.keys(inputError).length > 0) {
@@ -47,22 +48,29 @@ const Modal = ({ closeModal, videoId, defaultValue }) => {
 
 	const saveDetails = async () => {
 		try {
-			const isSuccessful = await axios.put(
-				`http://localhost:5110/api/video/${videoId}`,
+			const response = await axios.patch(
+				`http://localhost:5110/api/video/${id}`,
 				{
 					title: video.title,
 					description: video.description,
 				}
 			);
+			if (response.status === 200) {
+				// Check if the response status indicates success
+				setUpdateSuccessMessage("Video details updated successfully!");
 
-			if (isSuccessful) {
-				// Close the modal
+				// Clear the success message after 3 seconds
+				setTimeout(() => setUpdateSuccessMessage(""), 3000);
+
+				// Close the modal after update
 				closeModal();
+			} else {
+				throw new Error("Failed to update video details");
 			}
 		} catch (error) {
-			console.error("An error occurred while saving the image details", error);
+			console.error("An error occurred while saving the video details", error);
 			setFormError({
-				apiError: "Failed to save image details. Please try again.",
+				apiError: "Failed to save video details. Please try again.",
 			});
 		} finally {
 			setSubmitting(false);
@@ -73,12 +81,12 @@ const Modal = ({ closeModal, videoId, defaultValue }) => {
 		<div className="modalContainer">
 			<div className="modal">
 				<form className="form" onSubmit={validateFormInput}>
-					<h1 className="title">Image Details Update</h1>
-					<button type="button" className="closeButton" onClick={closeModal}>
+					<h1 className="title">Video Details Update</h1>
+					<button type="button" className="closeModalButton" onClick={closeModal}>
 						<i className="bi bi-x"></i>
 					</button>
 					<div className="formGroup">
-						<label>Image Title</label>
+						<label>Video Title</label>
 						<input
 							name="title"
 							value={video.title}
@@ -92,6 +100,7 @@ const Modal = ({ closeModal, videoId, defaultValue }) => {
 					<div className="formGroup">
 						<label>Video Description</label>
 						<textarea
+							className="description"
 							name="description"
 							value={video.description}
 							disabled={submitting}
@@ -104,6 +113,13 @@ const Modal = ({ closeModal, videoId, defaultValue }) => {
 					<button type="submit" className="saveButton" disabled={submitting}>
 						Save Details
 					</button>
+
+					{/* Success Message */}
+					{updateSuccessMessage && (
+						<div className="successMessage">
+							<p>{updateSuccessMessage}</p>
+						</div>
+					)}
 				</form>
 			</div>
 		</div>

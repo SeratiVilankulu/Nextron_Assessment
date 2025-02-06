@@ -8,9 +8,6 @@ namespace api.Dto.Review
 {
   public class UpdateReviewRequestDto
   {
-    [Required]
-    [Range(0, 5)]
-    public int Rating { get; set; }
 
     [MaxLength(255, ErrorMessage = "Text cannot exceeded the character length")]
     public string ReviewText { get; set; } = string.Empty;

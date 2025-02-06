@@ -5,6 +5,7 @@ import axios from "axios";
 import Navigation from "../../components/navigation";
 import Reviews from "../../components/reviews";
 import { formatDistanceToNow } from "date-fns";
+import Modal from "../../components/modal";
 
 const VideoDetails = () => {
 	const router = useRouter();
@@ -13,7 +14,6 @@ const VideoDetails = () => {
 		title = "",
 		description = "",
 		videoURL = "",
-		createdAt = "",
 		MyPosts = "false", // Flag to check if the video is accessed through 'My Posts'
 	} = router.query;
 
@@ -27,22 +27,8 @@ const VideoDetails = () => {
 		description,
 		videoId,
 	});
-	const [ratingCount, setRatingCount] = useState(0);
 	const [isPlaying, setIsPlaying] = useState(false);
-
-	useEffect(() => {
-		// Fetch the logged-in user details
-		const fetchUser = async () => {
-			try {
-				const response = await axios.get("http://localhost:5110/api/users");
-				setUser(response.data);
-			} catch (error) {
-				console.error("Error fetching user data:", error);
-			}
-		};
-
-		fetchUser();
-	}, []);
+	const [reloadFlag, setReloadFlag] = useState(false); // New state to trigger re-fetch
 
 	useEffect(() => {
 		if (videoId) {
@@ -64,7 +50,7 @@ const VideoDetails = () => {
 					console.error("Error fetching video details:", error)
 				);
 		}
-	}, [videoId, user, MyPosts]);
+	}, [videoId, user, MyPosts, reloadFlag]); // Added reloadFlag as a dependency
 
 	const playVideo = () => {
 		setIsPlaying(true);
@@ -85,6 +71,12 @@ const VideoDetails = () => {
 			...prevImage,
 			...newDetails,
 		}));
+	};
+
+	// Function to trigger the re-fetch
+	const handleModalClose = () => {
+		setOpenModal(false);
+		setReloadFlag((prevFlag) => !prevFlag); // Toggle the reloadFlag to trigger useEffect again
 	};
 
 	if (!updatedVideo.videoURL) {
@@ -119,19 +111,16 @@ const VideoDetails = () => {
 												<div className="details1">
 													<h2>{updatedVideo.title}</h2>
 
-													{/* Only show edit and delete icons if accessed from 'My Posts' and user is the creator */}
-													{MyPosts === "true" && editIcon && (
+													<div className="iconsContainer">
 														<i
 															className="bi bi-pencil-fill"
 															onClick={() => setOpenModal(true)}
 														></i>
-													)}
-													{MyPosts === "true" && deleteIcon && (
 														<i
 															onClick={() => deleteVideo(videoId)}
 															className="bi bi-trash3"
 														></i>
-													)}
+													</div>
 												</div>
 												<div className="userProfile">
 													<p>By:</p>
@@ -164,7 +153,6 @@ const VideoDetails = () => {
 											<div className="icons">
 												<div className="actionsContainer">
 													<i className="bi bi-chat-right"></i>
-													{ratingCount >= 0 && <span>{ratingCount}</span>}
 												</div>
 											</div>
 										</div>
@@ -174,13 +162,12 @@ const VideoDetails = () => {
 						</div>
 					</div>
 				</div>
-				{/* Comments and Modal Components */}
 				<Reviews videoId={updatedVideo.videoId} />
 				{openModal && (
 					<Modal
-						closeModal={() => setOpenModal(false)}
+						closeModal={handleModalClose} 
 						defaultValue={updatedVideo}
-						id={video.videoId}
+						id={updatedVideo.videoId}
 						updateVideoDetails={updateVideoDetails}
 					/>
 				)}

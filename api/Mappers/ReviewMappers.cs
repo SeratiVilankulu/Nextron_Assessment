@@ -34,7 +34,6 @@ namespace api.Mappers
     {
       return new Review
       {
-        Rating = reviewDto.Rating,
         ReviewText = reviewDto.ReviewText,
       };
     }
