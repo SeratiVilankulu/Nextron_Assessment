@@ -1,7 +1,5 @@
 # Streamify App
 
-# Streamify App
-
 ## Project Overview
 The **Streamify App** allows users to upload, manage, and review videos. It includes features like video details editing, video content management.
 
