@@ -19,15 +19,18 @@ namespace api.Repository
       _context = context;
     }
 
-    public async Task<Video> CreateAsync(Video videoModel, int categoryId)
+    public async Task<Video> CreateAsync(CreateVideoRequestDto videoDto, int categoryId, string userId)
     {
       var video = new Video
       {
-        Title = videoModel.Title,
-        Description = videoModel.Description,
-        ThumbnailURL = videoModel.ThumbnailURL,
-        VideoURL = videoModel.VideoURL,
+        Title = videoDto.Title,
+        Description = videoDto.Description,
+        ThumbnailURL = videoDto.ThumbnailURL,
+        VideoURL = videoDto.VideoURL,
         CategoryId = categoryId,
+        CreatedAt = DateOnly.FromDateTime(DateTime.Now),
+        IsPublic = videoDto.IsPublic,
+        AppUserId = userId,
       };
       _context.Videos.Add(video);
       await _context.SaveChangesAsync();

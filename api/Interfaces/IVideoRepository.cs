@@ -13,7 +13,7 @@ namespace api.Interfaces
     Task<List<Video>> GetAllAsync();
     Task<Video?> GetByIdAsync(int id);
     Task<List<Video>> GetByUserIdAsync(string userId);
-    Task<Video> CreateAsync(Video videoModel,int categoryId);
+    Task<Video> CreateAsync(CreateVideoRequestDto videoDto,int categoryId, string userId);
     Task<Video> UpdateAsync(int id, UpdateVideoRequestDto updateDto);
     Task<Video?> DeleteAsync(int id);
     Task<bool> VideoExists(int id);

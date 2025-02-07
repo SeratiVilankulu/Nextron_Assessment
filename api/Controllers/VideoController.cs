@@ -83,7 +83,7 @@ namespace api.Controllers
         CreatedAt = video.CreatedAt,
         Reviews = video.Reviews.Select(r => r.ToReviewDto()).ToList(),
         CreatorUserName = video.AppUser != null ? video.AppUser.UserName : "Unknown",
-        CreatorUserId = video.AppUser?.Id
+        AppUserId = video.AppUser?.Id
       };
 
       return Ok(videoDto);
@@ -128,22 +128,26 @@ namespace api.Controllers
           engine.GetMetadata(inputFile);
         }
 
-        var userEmail = User.GetUserEmail();
-        var user = await _userManager.FindByEmailAsync(userEmail);
+        var userEmail = User.GetUserEmail(); // from the claims extension
 
-        if (user == null) return Unauthorized("user not found");
+        if (string.IsNullOrEmpty(userEmail))
+        {
+          return Unauthorized("Email is missing from the claims.");
+        }
+        var user = await _userManager.FindByEmailAsync(userEmail);
+        if (user == null)
+        {
+          return Unauthorized("User not found.");
+        }
 
         var userId = user.Id;
 
         // Add duration to your model
         var videoModel = videoDto.ToVideoFromCreateDto();
-        videoModel.CreatedAt = DateOnly.FromDateTime(DateTime.UtcNow); 
         videoModel.videoDuration = inputFile.Metadata.Duration;
 
-        videoModel.AppUserId = userId; // Set the userId here
-
         // Pass both videosDto and categoryID to CreateAsync
-        videoModel = await _videoRepo.CreateAsync(videoModel, categoryId);
+        videoModel = await _videoRepo.CreateAsync(videoDto, categoryId, user.Id);
 
         // Clean up temporary file
         System.IO.File.Delete(tempFilePath);

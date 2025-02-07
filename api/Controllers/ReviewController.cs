@@ -94,8 +94,6 @@ namespace api.Controllers
       return Ok(reviewsDto);
     }
 
-
-
     //Post endpoint to post a review
     [HttpPost("{videoId:int}")]
     public async Task<IActionResult> Create([FromRoute] int videoId, [FromBody] CreateReviewDto reviewDto)

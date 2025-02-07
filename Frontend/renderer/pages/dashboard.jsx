@@ -9,7 +9,7 @@ import { getLoggedInUser } from "../../main/authorization";
 
 const Dashboard = () => {
 	const [video, setVideos] = useState([]); // State to store fetched videos
-	const [currentPage, setCurrentPage] = useState(1); // Number of images to display per page
+	const [currentPage, setCurrentPage] = useState(1); // Number of videos to display per page
 	const videosPerPage = 100;
 	const [loading, setLoading] = useState(false); // Track loading state
 	const router = useRouter(); 
@@ -46,7 +46,7 @@ const Dashboard = () => {
 		}
 	};
 
-	// Calculate the indexes for the images to display on the current page
+	// Calculate the indexes for the videos to display on the current page
 	const indexOfLastVideo = currentPage * videosPerPage;
 	const indexOfFirstVideo = indexOfLastVideo - videosPerPage;
 	const currentVideos = video.slice(indexOfFirstVideo, indexOfLastVideo);

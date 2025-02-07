@@ -4,63 +4,61 @@ import axios from "axios";
 import Navigation from "../components/navigation";
 
 const UploadPage = () => {
-  // State to manage form values
-  const [formInput, setFormInput] = useState({
-    Title: "",
-    Category: "",
-    Description: "",
-    ThumbnailURL: "",
-    VideoURL: "",
-    IsPublic: false,
-  });
+	// State to manage form values
+	const [formInput, setFormInput] = useState({
+		Title: "",
+		Category: "",
+		Description: "",
+		ThumbnailURL: "",
+		VideoURL: "",
+		IsPublic: false,
+	});
 
-  const [user, setUser] = useState(null);
+	const [user, setUser] = useState(null);
+	useEffect(() => {
+		// Access localStorage only on the client side
+		const userData = localStorage.getItem("user");
+		if (userData) {
+			setUser(JSON.parse(userData));
+		}
+	}, []);
 
-  useEffect(() => {
-    // Access localStorage only on the client side
-    const userData = localStorage.getItem("user");
-    if (userData) {
-      setUser(JSON.parse(userData));
-    }
-  }, []);
+	const [errorMsg, setErrorMsg] = useState({}); // State to store error messages for form validation
+	const [successMsg, setSuccessMsg] = useState(""); // State to display a success message after successful registration
+	const [submitting, setSubmitting] = useState(false); // State to manage the form submission status (to prevent multiple submissions)
+	const [imageFile, setImageFile] = useState(null);
+	const [videoFile, setVideoFile] = useState(null);
+	const [categories, setCategories] = useState([]); // State to manage the categories
 
-  const [errorMsg, setErrorMsg] = useState({}); // State to store error messages for form validation
-  const [successMsg, setSuccessMsg] = useState(""); // State to display a success message after successful registration
-  const [submitting, setSubmitting] = useState(false); // State to manage the form submission status (to prevent multiple submissions)
-  const [imageFile, setImageFile] = useState(null);
-  const [videoFile, setVideoFile] = useState(null);
-  const [categories, setCategories] = useState([]); // State to manage the categories
+	// Fetch categories from the backend
+	useEffect(() => {
+		const fetchCategories = async () => {
+			try {
+				const response = await axios.get("http://localhost:5110/api/category");
+				// Store the entire category list including categoryId
+				setCategories(response.data);
+			} catch (error) {
+				setErrorMsg({ api: "Cannot fetch categories" });
+			}
+		};
+		fetchCategories();
+	}, []);
 
-  // Fetch categories from the backend
-  useEffect(() => {
-    const fetchCategories = async () => {
-      try {
-        const response = await axios.get("http://localhost:5110/api/category");
-        // Store the entire category list including categoryId
-        setCategories(response.data);
-      } catch (error) {
-        setErrorMsg({ api: "Cannot fetch categories" });
-      }
-    };
-    fetchCategories();
-  }, []);
+	// Function to handle changes in form input fields
+	const handleVideoInput = (name, value) => {
+		setFormInput({
+			...formInput,
+			[name]: value,
+		});
+	};
 
-  // Function to handle changes in form input fields
-  const handleVideoInput = (name, value) => {
-    setFormInput({
-      ...formInput,
-      [name]: value,
-    });
-  };
-
-  // Toggle switch for IsPublic
-  const handleToggleIsPublic = () => {
-    setFormInput((prevState) => ({
-      ...prevState,
-      IsPublic: !prevState.IsPublic,
-    }));
-  };
-
+	// Toggle switch for IsPublic
+	const handleToggleIsPublic = () => {
+		setFormInput((prevState) => ({
+			...prevState,
+			IsPublic: !prevState.IsPublic,
+		}));
+	};
 
 	const handleDrop = (event, type) => {
 		event.preventDefault();
@@ -174,11 +172,16 @@ const UploadPage = () => {
 	// Function to push video information to Database
 	const handlePostToDB = async (videoData, categoryId) => {
 		try {
+			console.log("Details sent to DB:", videoData);
 			await axios.post(
 				`http://localhost:5110/api/video/${categoryId}`,
-				videoData
+				videoData,
+				{
+					headers: {
+						Authorization: `Bearer ${user.verificationToken}`,
+					},
+				}
 			);
-			console.log("Details sent to DB:", videoData);
 		} catch (error) {
 			console.error(error);
 		}
@@ -224,7 +227,7 @@ const UploadPage = () => {
 						"Incorrect file type, please upload an image. File type: PNG, JPG, or GIF.";
 				}
 				// Check if Thumbnail size is greater than 5MB
-				else if (imageFile.size > 5000000) {
+				else if (imageFile.size > 50000000) {
 					inputError.file =
 						"Image file is too large. Image size must be less than 5MB.";
 				}
@@ -238,7 +241,7 @@ const UploadPage = () => {
 						"Incorrect file type, please upload a video. File type: MP4, MOV, or AVI.";
 				}
 				// Check if video size is greater than 50MB (for example)
-				else if (videoFile.size > 50000000) {
+				else if (videoFile.size > 500000000) {
 					inputError.file =
 						"Video file is too large. Video size must be less than 50MB.";
 				}

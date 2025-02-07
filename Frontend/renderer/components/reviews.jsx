@@ -384,7 +384,7 @@ const Reviews = ({ videoId }) => {
 					))}
 				</ul>
 			) : (
-				<p>No reviews yet</p>
+				<p>No reviews yet, be the first one!</p>
 			)}
 		</div>
 	);
