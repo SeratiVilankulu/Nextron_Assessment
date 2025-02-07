@@ -51,6 +51,7 @@ The application follows a three-tier architecture:
 ## Application Features
 
 ### Video Management
+- In order to view image details, users can click on image from home page and they will be directed to image details page.
 - Users can upload videos by dragging and dropping them.
 - Reviews can be added, updated, or deleted.
 - Users can upload videos with titles and descriptions.
@@ -68,16 +69,19 @@ The application follows a three-tier architecture:
 ### Setup Instructions
 
 #### Clone the Repository
+Download project files and open with Visual Studio Code. 
+Alternitively you can clone project from Visual Studio Code. 
 GitHub Repository: [https://github.com/SeratiVilankulu/Nextron_Assessment.git]
 
 #### Backend Setup
-- Run the command: `dotnet ef database update`
+- Open the terminal by selecting Terminal > New Terminal from the menu bar on the top left.
 - Navigate into the Backend directory (File for backend: `api`).
 - Run command in terminal: `dotnet watch run`
 
 #### Frontend Setup
+- Open the terminal by selecting Terminal > New Terminal from the menu bar on the top left.
 - Navigate into the Frontend directory (File for Frontend: `Frontend`).
-- Install dependencies: `npm install` (for Frontend).
+- First install dependencies: `npm install` (for Frontend).
 - Start the Nextron development server: `npm run dev`
 
 ## How the App Runs
